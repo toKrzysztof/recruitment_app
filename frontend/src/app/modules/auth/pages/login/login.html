@@ -1,0 +1,40 @@
+<form
+  class="vertical-form register-form"
+  [formGroup]="loginForm"
+  (ngSubmit)="onSubmit()"
+>
+  <header class="header">
+    <a class="secondary-btn" routerLink="/contacts">Back to contacts page</a>
+    <h2>Login</h2>
+  </header>
+  <div class="row">
+    <div class="form-control-field">
+      <label for="username">Email</label>
+      <input formControlName="username" type="text" class="standard-input" required />
+      <app-validation-errors
+        [errors]="loginForm.controls.username.errors"
+        [dirty]="loginForm.controls.username.dirty"
+        [touched]="loginForm.controls.username.touched"
+      />
+    </div>
+    <div class="form-control-field">
+      <label for="password">Password</label>
+      <input
+        formControlName="password"
+        type="password"
+        class="standard-input"
+        required
+      />
+      <app-validation-errors
+        [errors]="loginForm.controls.password.errors"
+        [dirty]="loginForm.controls.password.dirty"
+        [touched]="loginForm.controls.password.touched"
+      />
+    </div>
+  </div>
+  <div class="btn-group">
+    <button class="primary-btn" type="submit" [disabled]="loginForm.invalid">
+      Login
+    </button>
+  </div>
+</form>

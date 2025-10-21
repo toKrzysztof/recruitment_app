@@ -1,0 +1,43 @@
+<p-table
+  [value]="contacts()"
+  [lazy]="true"
+  [paginator]="true"
+  [rows]="pageSize"
+  [totalRecords]="totalContacts"
+  [rowsPerPageOptions]="[10, 20]"
+  (onLazyLoad)="loadContacts($event)"
+  [loading]="loading"
+  stripedRows
+  [scrollable]="true"
+>
+  <ng-template #caption>
+    <div class="table-caption">
+      <span class="text-xl font-bold">Contacts</span>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th>Phone number</th>
+      <th>Date of birth</th>
+      <th>Category</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-contact>
+    <tr>
+      <td>{{ contact.firstName }}</td>
+      <td>{{ contact.lastName }}</td>
+      <td>{{ contact.email }}</td>
+      <td>{{ contact.phoneNumber }}</td>
+      <td>{{ contact.dateOfBirth }}</td>
+      <td>{{ contact.category }}</td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr class="flex">
+      <td colspan="7"><div class="no-contacts-message">No contacts found.</div></td>
+    </tr>
+  </ng-template>
+</p-table>

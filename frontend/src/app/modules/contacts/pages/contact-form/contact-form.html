@@ -1,0 +1,115 @@
+<form
+  class="vertical-form register-form"
+  [formGroup]="contactForm"
+  (ngSubmit)="onSubmit()"
+>
+  <header class="header">
+    <a class="secondary-btn" routerLink="/contacts">Back to contacts page</a>
+    <h2>Add contact</h2>
+  </header>
+  <div class="row">
+    <div class="form-control-field">
+      <label for="firstName">First name</label>
+      <input formControlName="firstName" type="text" class="standard-input" required />
+      <app-validation-errors
+        [errors]="contactForm.controls.firstName.errors"
+        [dirty]="contactForm.controls.firstName.dirty"
+        [touched]="contactForm.controls.firstName.touched"
+      />
+    </div>
+    <div class="form-control-field">
+      <label for="lastName">Last name</label>
+      <input formControlName="lastName" type="text" class="standard-input" required />
+      <app-validation-errors
+        [errors]="contactForm.controls.lastName.errors"
+        [dirty]="contactForm.controls.lastName.dirty"
+        [touched]="contactForm.controls.lastName.touched"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-control-field">
+      <label for="username">Email</label>
+      <input
+        formControlName="username"
+        type="username"
+        class="standard-input"
+        required
+      />
+      <app-validation-errors
+        [errors]="contactForm.controls.username.errors"
+        [dirty]="contactForm.controls.username.dirty"
+        [touched]="contactForm.controls.username.touched"
+      />
+    </div>
+    <div class="form-control-field">
+      <label for="password">Password</label>
+      <input
+        formControlName="password"
+        type="password"
+        class="standard-input"
+        required
+      />
+      <app-validation-errors
+        [errors]="contactForm.controls.password.errors"
+        [dirty]="contactForm.controls.password.dirty"
+        [touched]="contactForm.controls.password.touched"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-control-field">
+      <label for="phoneNumber">Phone number</label>
+      <input
+        formControlName="phoneNumber"
+        type="text"
+        class="standard-input"
+        required
+      />
+      <app-validation-errors
+        [errors]="contactForm.controls.phoneNumber.errors"
+        [dirty]="contactForm.controls.phoneNumber.dirty"
+        [touched]="contactForm.controls.phoneNumber.touched"
+      />
+    </div>
+    <div class="form-control-field calendar p-fluid">
+      <label for="dateOfBirth">Date of birth</label>
+      <p-date-picker
+        fluid
+        severity="secondary"
+        appendTo="body"
+        id="dateOfBirth"
+        formControlName="dateOfBirth"
+        type="date"
+        showIcon="true"
+        class="pg-input"
+        [iconDisplay]="'input'"
+        [maxDate]="maxDate"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <!-- 
+    <div class="form-control-field">
+      <label for="category">Category</label>
+      <p-inputNumber
+        id="category"
+        formControlName="category"
+        type="number"
+        class="pg-inputnumber"
+      />
+      <app-validation-errors
+        [errors]="contactForm.controls.category.errors"
+        [dirty]="contactForm.controls.category.dirty"
+        [touched]="contactForm.controls.category.touched"
+      />
+    </div> -->
+  </div>
+  <div class="row"></div>
+
+  <div class="btn-group">
+    <button class="primary-btn" type="submit" [disabled]="contactForm.invalid">
+      Register
+    </button>
+  </div>
+</form>

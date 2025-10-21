@@ -1,0 +1,52 @@
+.contact-list {
+  margin: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #f0f0f0;
+}
+
+.form-control-field {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 25rem;
+}
+
+.vertical-form {
+  display: grid;
+  gap: 1rem;
+
+  &.vertical-form-fields {
+    label {
+      display: block;
+    }
+
+    textarea {
+      display: block;
+    }
+  }
+}
+
+.page-wrapper {
+  padding: 2rem;
+  margin: auto;
+  max-width: 75rem;
+}
