@@ -1,10 +1,9 @@
-
 @if (contact) {
 <div>
   <h2>{{ contact!.firstName }} {{ contact!.lastName }}</h2>
   <p>Email: {{ contact!.email }}</p>
   <p>Phone: {{ contact!.phoneNumber }}</p>
-  <!-- <button (click)="editContact(contact?.id)">Edit</button>
-  <button (click)="deleteContact(contact?.id)">Delete</button> -->
+  <p>Date of birth: {{ contact!.dateOfBirth }}</p>
+  <p>Password: {{ contact!.password }}</p>
 </div>
 }

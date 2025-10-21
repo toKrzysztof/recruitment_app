@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth';
 import { ValidationErrorsComponent } from '../../../shared/validation-errors/validation-errors';
 import { DatePicker } from 'primeng/datepicker';
+import { ContactService } from '../../services/contact';
 
 @Component({
   selector: 'app-contact-form',
@@ -22,17 +23,17 @@ export class ContactFormComponent {
   private router = inject(Router);
   private messageService = inject(MessageService);
   private destroyRef = inject(DestroyRef);
-  private authService = inject(AuthService);
+  private contactService = inject(ContactService);
   protected loading = false;
 
   protected filteredCountries: string[] = [];
   protected maxDate = new Date();
 
   protected contactForm = this.fb.group({
-    username: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.email]],
     firstName: ['', [Validators.required]],
     lastName: ['', [Validators.required]],
-    password: ['', Validators.required],
+    password: ['', [Validators.required, Validators.minLength(8)]],
     phoneNumber: ['', [Validators.required]],
     dateOfBirth: [],
     category: [null]
@@ -57,8 +58,8 @@ export class ContactFormComponent {
         dateOfBirth: dateOfBirth
       };
 
-      this.authService
-        .register(registerData)
+      this.contactService
+        .createContact(registerData)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (_) => {

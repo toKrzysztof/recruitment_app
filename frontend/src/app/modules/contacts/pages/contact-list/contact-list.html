@@ -23,6 +23,7 @@
       <th>Phone number</th>
       <th>Date of birth</th>
       <th>Category</th>
+      <th>Action</th>
     </tr>
   </ng-template>
   <ng-template #body let-contact>
@@ -33,6 +34,7 @@
       <td>{{ contact.phoneNumber }}</td>
       <td>{{ contact.dateOfBirth }}</td>
       <td>{{ contact.category }}</td>
+      <td><a [href]="'/contacts/' + contact.id">View details</a></td>
     </tr>
   </ng-template>
   <ng-template #emptymessage>

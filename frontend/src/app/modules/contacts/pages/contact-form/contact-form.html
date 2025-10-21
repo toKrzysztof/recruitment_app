@@ -29,17 +29,12 @@
   </div>
   <div class="row">
     <div class="form-control-field">
-      <label for="username">Email</label>
-      <input
-        formControlName="username"
-        type="username"
-        class="standard-input"
-        required
-      />
+      <label for="email">Email</label>
+      <input formControlName="email" type="email" class="standard-input" required />
       <app-validation-errors
-        [errors]="contactForm.controls.username.errors"
-        [dirty]="contactForm.controls.username.dirty"
-        [touched]="contactForm.controls.username.touched"
+        [errors]="contactForm.controls.email.errors"
+        [dirty]="contactForm.controls.email.dirty"
+        [touched]="contactForm.controls.email.touched"
       />
     </div>
     <div class="form-control-field">

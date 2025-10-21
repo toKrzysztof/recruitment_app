@@ -10,12 +10,9 @@ import { ContactDto } from '../../models/contact-dto';
   styleUrl: './contact-details.scss'
 })
 export class ContactDetailsComponent implements OnInit {
-  contact: ContactDto | null = null;
+  protected contact: ContactDto | null = null;
 
-  constructor(
-    private contactService: ContactService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private contactService: ContactService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     const id = +this.route.snapshot.paramMap.get('id')!;

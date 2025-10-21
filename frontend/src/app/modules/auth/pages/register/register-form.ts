@@ -1,5 +1,4 @@
 import { Component, DestroyRef, inject } from '@angular/core';
-import { DatePicker } from 'primeng/datepicker';
 import { ValidationErrorsComponent } from '../../../shared/validation-errors/validation-errors';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -29,33 +28,15 @@ export class RegisterFormComponent {
   protected maxDate = new Date();
 
   protected registerForm = this.fb.group({
-    username: ['', [Validators.required, Validators.email]],
-    firstName: ['', [Validators.required]],
-    lastName: ['', [Validators.required]],
-    password: ['', Validators.required],
-    phoneNumber: ['', [Validators.required]],
-    dateOfBirth: [null],
-    category: [null]
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
   });
-
-  private parseDate(isoDate: number): string {
-    const date = new Date(isoDate);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
 
   protected onSubmit(): void {
     this.loading = true;
 
     if (this.registerForm.valid) {
-      const dateOfBirth = this.parseDate(this.registerForm.value.dateOfBirth!);
-
-      const registerData = {
-        ...this.registerForm.getRawValue(),
-        dateOfBirth: dateOfBirth
-      };
+      const registerData = this.registerForm.getRawValue();
 
       this.authService
         .register(registerData)

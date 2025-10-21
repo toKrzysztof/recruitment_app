@@ -15,10 +15,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class ContactListComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
-  totalContacts: number = 0;
-  pageSize: number = 10;
-  contacts = signal<ContactDto[]>([]);
-  loading = false;
+  protected totalContacts: number = 0;
+  protected pageSize: number = 10;
+  protected contacts = signal<ContactDto[]>([]);
+  protected loading = false;
 
   constructor(private contactService: ContactService, private router: Router) {}
 
@@ -61,10 +61,4 @@ export class ContactListComponent implements OnInit {
   editContact(id: number): void {
     this.router.navigate([`/contacts/edit/${id}`]);
   }
-
-  // deleteContact(id: number): void {
-  //   this.contactService.deleteContact(id).subscribe(() => {
-  //     this.loadContacts();
-  //   });
-  // }
 }
