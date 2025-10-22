@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RecruitmentApp.Features.Authentication.Application;
 using RecruitmentApp.Features.Contacts.Data;
-using RecruitmentApp.Features.Contacts.Data.Contracts;
-using RecruitmentApp.Features.Contacts.Data.Repositories;
 using RecruitmentApp.Shared.Api;
 using RecruitmentApp.Shared.Api.Contracts;
+using RecruitmentApp.Shared.Data;
+using RecruitmentApp.Shared.Data.Contracts;
 
 namespace RecruitmentApp.Extensions;
 
@@ -32,7 +32,7 @@ public static class ApplicationServicesExtensions
 
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IHttpService, HttpService>();
-        services.AddScoped<IContactRepository, ContactRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)

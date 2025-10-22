@@ -10,7 +10,6 @@ public class AuthController : ApiControllerBase
 {
     private readonly AuthService _authService;
 
-
     public AuthController(AuthService authService)
     {
         _authService = authService;

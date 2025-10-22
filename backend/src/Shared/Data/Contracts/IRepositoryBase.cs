@@ -13,4 +13,6 @@ public interface IRepositoryBase<T> where T : IEntity
     public T Update(T entity);
 
     public void Delete(T entity);
+
+    public Task<bool> ExistsAsync(int id);
 }

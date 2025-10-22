@@ -1,23 +1,24 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DefaultNamespace;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RecruitmentApp.Features.Contacts.Data;
-using RecruitmentApp.Features.Contacts.Data.Contracts;
+using RecruitmentApp.Features.Contacts.Application.Contracts;
 using RecruitmentApp.Features.Contacts.Domain;
 using RecruitmentApp.Shared.Api;
 using RecruitmentApp.Shared.Api.Contracts;
+using RecruitmentApp.Shared.Constants;
+using RecruitmentApp.Shared.Data.Contracts;
 
 namespace RecruitmentApp.Features.Contacts.Api.Controllers;
 
 public class ContactsController : ApiControllerBase
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IContactRepository _contactRepository;
+    private readonly IContactService _contactService;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public ContactsController(ApplicationDbContext context, IContactRepository contactRepository)
+    public ContactsController(IContactService contactService, IUnitOfWork unitOfWork)
     {
-        _contactRepository = contactRepository;
-        _context = context;
+        _unitOfWork = unitOfWork;
+        _contactService = contactService;
     }
 
     // GET: api/contacts
@@ -25,7 +26,7 @@ public class ContactsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Contact>))]
     public async Task<ActionResult> GetAllContacts([FromQuery] GetAllContactsQueryParams queryParams, IHttpService httpService)
     {
-        var pagedList = await _contactRepository.GetAllAsync(queryParams);
+        var pagedList = await _unitOfWork.Contacts.GetAllAsync(queryParams);
         httpService.AddPaginationHeader(Response, PaginationHeader.FromPagedList(pagedList));
         return Ok(pagedList.Items);
     }
@@ -35,7 +36,7 @@ public class ContactsController : ApiControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Contact>> GetContact(int id)
     {
-        var contact = await _context.Contacts.FindAsync(id);
+        var contact = await _unitOfWork.Contacts.GetByIdAsync(id);
 
         if (contact == null)
         {
@@ -48,43 +49,31 @@ public class ContactsController : ApiControllerBase
     // POST: api/contacts
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Contact>> PostContact(Contact contact)
+    public async Task<ActionResult<Contact>> PostContact(ContactDetailsDto contactDetailsDto)
     {
-        _context.Contacts.Add(contact);
-        await _context.SaveChangesAsync();
+        var serviceResponse = await _contactService.AddContact(contactDetailsDto);
 
-        return CreatedAtAction(nameof(GetContact), new { id = contact.Id }, contact);
+        if (!serviceResponse.IsSuccess) return BadRequest(serviceResponse.Errors);
+
+        return CreatedAtAction(nameof(GetContact), new { id = serviceResponse.Data.Id }, serviceResponse.Data);
     }
 
     // PUT: api/contacts/5
     [Authorize]
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutContact(int id, Contact contact)
+    public async Task<IActionResult> PutContact(int id, ContactDetailsDto contactDetailsDto)
     {
-        if (id != contact.Id)
+        var serviceResponse = await _contactService.UpdateContact(contactDetailsDto);
+
+        if (!serviceResponse.IsSuccess & serviceResponse.Errors.Any(e => e == nameof(GenericErrorMessage.NotFound)))
         {
-            return BadRequest();
+            NotFound();
+        } else if (!serviceResponse.IsSuccess)
+        {
+            return BadRequest(serviceResponse.Errors);
         }
 
-        _context.Entry(contact).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!ContactExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
+        return CreatedAtAction(nameof(GetContact), new { id = serviceResponse.Data.Id }, serviceResponse.Data);
     }
 
     // DELETE: api/contacts/5
@@ -92,20 +81,15 @@ public class ContactsController : ApiControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteContact(int id)
     {
-        var contact = await _context.Contacts.FindAsync(id);
+        var contact = await _unitOfWork.Contacts.GetByIdAsync(id);
         if (contact == null)
         {
             return NotFound();
         }
 
-        _context.Contacts.Remove(contact);
-        await _context.SaveChangesAsync();
+        _unitOfWork.Contacts.Delete(contact);
+        await _unitOfWork.SaveChangesAsync();
 
         return NoContent();
-    }
-
-    private bool ContactExists(int id)
-    {
-        return _context.Contacts.Any(e => e.Id == id);
     }
 }

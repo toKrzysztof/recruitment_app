@@ -1,6 +1,8 @@
-﻿using RecruitmentApp.Features.Contacts.Api;
+﻿using Microsoft.EntityFrameworkCore;
+using RecruitmentApp.Features.Contacts.Api;
 using RecruitmentApp.Features.Contacts.Data.Contracts;
 using RecruitmentApp.Features.Contacts.Domain;
+using RecruitmentApp.Shared.Application;
 using RecruitmentApp.Shared.Data;
 using RecruitmentApp.Shared.Data.Extensions;
 
