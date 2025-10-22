@@ -11,7 +11,7 @@ namespace RecruitmentApp.Features.Contacts.Api.Controllers;
 
 public class ContactsController : ApiControllerBase
 {
-    private readonly Applicationgit DbContext _context;
+    private readonly ApplicationDbContext _context;
     private readonly IContactRepository _contactRepository;
 
     public ContactsController(ApplicationDbContext context, IContactRepository contactRepository)
