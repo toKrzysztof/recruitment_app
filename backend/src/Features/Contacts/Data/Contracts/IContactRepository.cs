@@ -1,6 +1,11 @@
-﻿namespace RecruitmentApp.Features.Contacts.Data.Contracts;
+﻿using RecruitmentApp.Features.Contacts.Api;
+using RecruitmentApp.Features.Contacts.Domain;
+using RecruitmentApp.Shared.Data;
+using RecruitmentApp.Shared.Data.Contracts;
 
-public class IContactRepository
+namespace RecruitmentApp.Features.Contacts.Data.Contracts;
+
+public interface IContactRepository : IRepositoryBase<Contact>
 {
-    
+  Task<PagedList<Contact>> GetAllAsync(GetAllContactsQueryParams queryParams);
 }

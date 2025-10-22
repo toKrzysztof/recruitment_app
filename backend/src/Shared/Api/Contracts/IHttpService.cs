@@ -1,4 +1,4 @@
-﻿namespace RecruitmentApp.Shared.Api;
+﻿namespace RecruitmentApp.Shared.Api.Contracts;
 
 public interface IHttpService
 {

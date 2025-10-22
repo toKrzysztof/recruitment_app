@@ -1,6 +1,6 @@
 ﻿namespace RecruitmentApp.Shared.Domain.Contracts;
 
-public class IEntity
+public interface IEntity
 {
-    
+  public int Id { get; set; }
 }
