@@ -1,0 +1,68 @@
+services:
+  postgres:
+    container_name: recruitment_app_db
+    image: postgres:18.0
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: recruitment_app
+    networks:
+      - recruitment_app_db_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d recruitment_app"]
+      interval: 10s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
+
+  dbeaver:
+    image: dbeaver/cloudbeaver:25.2.2
+    container_name: db_client
+    networks:
+      - recruitment_app_db_network
+    ports:
+      - "8978:8978"
+    volumes:
+      - /var/cloudbeaver/workspace:/opt/cloudbeaver/workspace
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    container_name: recruitment_app_api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: recruitment_app_api
+    ports:
+      - 8080:8080
+    networks:
+      - recruitment_app_db_network
+    volumes:
+      - ./src/appsettings.json:/app/config/appsettings.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'if echo -n > /dev/tcp/localhost/8080; then exit 0; else exit 1; fi'"]
+      interval: 10s
+      retries: 3
+      start_period: 15s
+      timeout: 10s
+    
+  frontend:
+    container_name: recruitment_app_frontend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: recruitment_app_frontend
+    ports:
+      - 443:443
+      - 80:80
+    depends_on:
+      api:
+        condition: service_healthy
+        
+networks:
+  recruitment_app_db_network:
