@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace RecruitmentApp.Features.Authentication.Service;
+namespace RecruitmentApp.Features.Authentication.Application;
 
 public interface ITokenService
 {

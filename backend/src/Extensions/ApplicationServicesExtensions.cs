@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using RecruitmentApp.Features.Authentication.Service;
+using RecruitmentApp.Features.Authentication.Application;
 using RecruitmentApp.Features.Contacts.Data;
 using RecruitmentApp.Features.Contacts.Data.Contracts;
 using RecruitmentApp.Features.Contacts.Data.Repositories;
@@ -22,14 +22,14 @@ public static class ApplicationServicesExtensions
                 configuration.GetConnectionString("DefaultConnection")
             );
         });
-        
+
         services.AddDbContext<AuthDbContext>(options =>
         {
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection")
             );
         });
-        
+
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IHttpService, HttpService>();
         services.AddScoped<IContactRepository, ContactRepository>();
@@ -40,9 +40,9 @@ public static class ApplicationServicesExtensions
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options => options.TokenValidationParameters =new TokenValidationParameters
             {
-                ValidateIssuer = true, 
-                ValidateAudience = true, 
-                ValidateLifetime = true, 
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = configuration["Jwt:Issuer"],
                 ValidAudience = configuration["Jwt:Audience"],
@@ -59,7 +59,7 @@ public static class ApplicationServicesExtensions
             .AddEntityFrameworkStores<AuthDbContext>()
             .AddDefaultTokenProviders();
     }
-    
+
     public static void ConfigurePasswordPolicy(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<IdentityOptions>(options =>

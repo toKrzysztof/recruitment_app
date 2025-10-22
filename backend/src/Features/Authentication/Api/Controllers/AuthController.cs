@@ -1,67 +1,40 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using RecruitmentApp.Features.Authentication.Application;
 using RecruitmentApp.Features.Authentication.Dto;
-using RecruitmentApp.Features.Authentication.Service;
 using RecruitmentApp.Shared.Api;
 
 namespace RecruitmentApp.Features.Authentication.Api.Controllers;
 
 public class AuthController : ApiControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly ITokenService _tokenService;
-    
-    public AuthController(UserManager<IdentityUser> userManager, ITokenService tokenService)
+    private readonly AuthService _authService;
+
+
+    public AuthController(AuthService authService)
     {
-        this._userManager = userManager;
-        this._tokenService = tokenService;
+        _authService = authService;
     }
-    
+
     [HttpPost]
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
     {
-        var identityUser = new IdentityUser
-        {
-            UserName = registerRequestDto.Username,
-            Email = registerRequestDto.Username
-        };
-        
-        var identityResult = await _userManager.CreateAsync(identityUser, registerRequestDto.Password);
+        var serviceResponse = await _authService.Register(registerRequestDto);
 
-        if (identityResult.Succeeded)
-        {
-            return Ok("Registration Successful.");
-        }
-        
-        return BadRequest("Registration Failed.");
+        if (!serviceResponse.IsSuccess) return BadRequest(serviceResponse.Errors);
+
+        return Ok(serviceResponse.Data);
     }
-    
+
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
     {
-        var user = await _userManager.FindByEmailAsync(loginRequestDto.Username);
+        var serviceResponse = await _authService.Login(loginRequestDto);
 
-        if (user == null)
-        {
-            return BadRequest("Invalid username or password.");
-        }
-        
-        var passwordValid = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+        if (!serviceResponse.IsSuccess) return BadRequest(serviceResponse.Errors);
 
-        if (!passwordValid)
-        {
-            return BadRequest("Invalid username or password.");
-        }
-        
-        var token = _tokenService.CreateJwtToken(user);
-
-        var response = new LoginResponseDto
-        {
-            JwtToken = token
-        };
-        
-        return Ok(response);
+        return Ok(serviceResponse.Data);
     }
 }
