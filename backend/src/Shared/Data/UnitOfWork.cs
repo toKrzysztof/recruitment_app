@@ -9,6 +9,8 @@ namespace RecruitmentApp.Shared.Data;
 public class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
 {
     public IContactRepository Contacts { get; } = new ContactRepository(context);
+    public ICategoryRepository Categories { get; } = new CategoryRepository(context);
+    public ISubcategoryRepository Subcategories { get; } = new SubcategoryRepository(context);
 
     public async Task<bool> SaveChangesAsync()
     {

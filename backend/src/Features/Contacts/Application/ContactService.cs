@@ -51,12 +51,32 @@ public class ContactService : IContactService
             validationErrors.Add("The password must contain at least one non-alphanumeric character.");
         }
 
+        if (!CategoryConstants.Categories.Contains((contactDetailsDto.CategoryDto.Name)))
+        {
+            validationErrors.Add($"The category {contactDetailsDto.CategoryDto.Name} does not exist.");
+        }
+
         if (validationErrors.Any())
         {
             return ServiceResult<ContactDetailsDto>.Failure(validationErrors);
         }
 
         var contact = _mapper.Map<Contact>(contactDetailsDto);
+
+        var category = await _unitOfWork.Categories.GetByName(contactDetailsDto.CategoryDto.Name);
+        if (category != null)
+        {
+            contact.Category = category;
+        }
+
+        if (contactDetailsDto.SubcategoryDto != null)
+        {
+            var subcategory = await _unitOfWork.Subcategories.GetByName(contactDetailsDto.CategoryDto.Name);
+            if (subcategory != null)
+            {
+                contact.Subcategory = subcategory;
+            }
+        }
 
         _unitOfWork.Contacts.Add(contact);
 
