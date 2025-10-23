@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RecruitmentApp.Features.Contacts.Application.Contracts;
 using RecruitmentApp.Features.Contacts.Domain;
@@ -14,27 +15,32 @@ public class ContactsController : ApiControllerBase
 {
     private readonly IContactService _contactService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    public ContactsController(IContactService contactService, IUnitOfWork unitOfWork)
+    public ContactsController(IContactService contactService, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _contactService = contactService;
+        _mapper = mapper;
     }
 
     // GET: api/contacts
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Contact>))]
-    public async Task<ActionResult> GetAllContacts([FromQuery] GetAllContactsQueryParams queryParams, IHttpService httpService)
+    public async Task<IActionResult> GetAllContacts([FromQuery] GetAllContactsQueryParams queryParams, IHttpService httpService)
     {
         var pagedList = await _unitOfWork.Contacts.GetAllAsync(queryParams);
         httpService.AddPaginationHeader(Response, PaginationHeader.FromPagedList(pagedList));
-        return Ok(pagedList.Items);
+
+        var contactDtos = _mapper.Map<ContactDto[]>(pagedList.Items);
+
+        return Ok((contactDtos));
     }
 
     // GET: api/contacts/5
     [Authorize]
     [HttpGet("{id}")]
-    public async Task<ActionResult<Contact>> GetContact(int id)
+    public async Task<IActionResult> GetContact(int id)
     {
         var contact = await _unitOfWork.Contacts.GetByIdAsync(id);
 
@@ -43,19 +49,21 @@ public class ContactsController : ApiControllerBase
             return NotFound();
         }
 
-        return contact;
+        var contactDetailsDto = _mapper.Map<ContactDetailsDto>(contact);
+
+        return Ok(contactDetailsDto);
     }
 
     // POST: api/contacts
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Contact>> PostContact(ContactDetailsDto contactDetailsDto)
+    public async Task<IActionResult> PostContact(ContactDetailsDto contactDetailsDto)
     {
         var serviceResponse = await _contactService.AddContact(contactDetailsDto);
 
         if (!serviceResponse.IsSuccess) return BadRequest(serviceResponse.Errors);
 
-        return CreatedAtAction(nameof(GetContact), new { id = serviceResponse.Data.Id }, serviceResponse.Data);
+        return CreatedAtAction(nameof(GetContact), new { id = serviceResponse.Data.Id }, contactDetailsDto);
     }
 
     // PUT: api/contacts/5
@@ -65,7 +73,7 @@ public class ContactsController : ApiControllerBase
     {
         var serviceResponse = await _contactService.UpdateContact(contactDetailsDto);
 
-        if (!serviceResponse.IsSuccess & serviceResponse.Errors.Any(e => e == nameof(GenericErrorMessage.NotFound)))
+        if (serviceResponse.Errors.Any(e => e == nameof(GenericErrorMessage.NotFound)))
         {
             NotFound();
         } else if (!serviceResponse.IsSuccess)
@@ -73,7 +81,7 @@ public class ContactsController : ApiControllerBase
             return BadRequest(serviceResponse.Errors);
         }
 
-        return CreatedAtAction(nameof(GetContact), new { id = serviceResponse.Data.Id }, serviceResponse.Data);
+        return CreatedAtAction(nameof(GetContact), new { id = serviceResponse.Data.Id }, contactDetailsDto);
     }
 
     // DELETE: api/contacts/5
@@ -87,8 +95,8 @@ public class ContactsController : ApiControllerBase
             return NotFound();
         }
 
-        _unitOfWork.Contacts.Delete(contact );
-        await _unitOfWork.SaveChangesAsync();
+        if (!await _unitOfWork.SaveChangesAsync())
+            throw new Exception("Failed to save database");
 
         return NoContent();
     }

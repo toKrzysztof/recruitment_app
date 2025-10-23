@@ -9,6 +9,6 @@ public class ContactDetailsDto
     public required string PhoneNumber { get; set; }
     public required string Password { get; set; }
     public DateOnly DateOfBirth { get; set; }
-    public required CategoryDto CategoryDto { get; set; }
-    public SubcategoryDto? SubcategoryDto { get; set; }
+    public required CategoryDto Category { get; set; }
+    public SubcategoryDto? Subcategory { get; set; }
 }

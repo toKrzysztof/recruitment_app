@@ -8,6 +8,6 @@ public class ContactDto
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string Email { get; set; }
-    public required Category Category { get; set; }
-    public Subcategory? Subcategory { get; set; }
+    public required CategoryDto Category { get; set; }
+    public SubcategoryDto? Subcategory { get; set; }
 }

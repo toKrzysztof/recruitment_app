@@ -10,5 +10,9 @@ public class AutoMapperProfiles : Profile
     {
         CreateMap<Contact, ContactDetailsDto>();
         CreateMap<ContactDetailsDto, Contact>();
+        CreateMap<Category, CategoryDto>();
+        CreateMap<CategoryDto, Category>();
+        CreateMap<Subcategory, SubcategoryDto>();
+        CreateMap<SubcategoryDto, Subcategory>();
     }
 }

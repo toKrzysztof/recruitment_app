@@ -21,6 +21,108 @@ public class ContactService : IContactService
 
     public async Task<ServiceResult<ContactDetailsDto>> AddContact(ContactDetailsDto contactDetailsDto)
     {
+        var validationErrors = await ValidateAddContact(contactDetailsDto);
+
+        if (validationErrors.Any())
+        {
+            return ServiceResult<ContactDetailsDto>.Failure(validationErrors);
+        }
+
+        var contact = _mapper.Map<Contact>(contactDetailsDto);
+
+        var category = await _unitOfWork.Categories.GetByName(contactDetailsDto.Category.Name);
+
+        if (category == null)
+            throw new Exception("Category was expected to be found in the database but was not.");
+
+        contact.Category = category;
+
+        if (contactDetailsDto.Subcategory != null)
+        {
+            var subcategory = await _unitOfWork.Subcategories.GetByName(contactDetailsDto.Subcategory.Name);
+
+            if (subcategory != null)
+            {
+                subcategory.Category = category;
+                contact.Subcategory = subcategory;
+            }
+            else
+            {
+                var createdSubcategory = _unitOfWork
+                    .Subcategories
+                    .Add(_mapper.Map<Subcategory>(contactDetailsDto.Subcategory));
+
+                createdSubcategory.Category = category;
+                contact.Subcategory = createdSubcategory;
+            }
+        }
+
+        _unitOfWork.Contacts.Add(contact);
+
+        if (!await _unitOfWork.SaveChangesAsync())
+            throw new Exception("Failed to save database");
+
+        return ServiceResult<ContactDetailsDto>.Success(_mapper.Map<ContactDetailsDto>(contact));
+    }
+
+    public async Task<ServiceResult<ContactDetailsDto>> UpdateContact(ContactDetailsDto contactDetailsDto)
+    {
+        var validationErrors = await ValidateUpdateContact(contactDetailsDto);
+
+        if (validationErrors.Any())
+        {
+            return ServiceResult<ContactDetailsDto>.Failure(validationErrors);
+        }
+
+        var contact = await _unitOfWork.Contacts.GetByIdAsync(contactDetailsDto.Id);
+        if (contact == null)
+            throw new Exception("Contact with the given id was expected to be found in the database but was not.");
+
+        _mapper.Map(contactDetailsDto, contact);
+        _unitOfWork.Contacts.Update(contact);
+
+        if (!await _unitOfWork.SaveChangesAsync())
+            throw new Exception("Failed to save database");
+
+        return ServiceResult<ContactDetailsDto>.Success(_mapper.Map<ContactDetailsDto>(contact));
+    }
+
+    private async Task<List<string>> ValidateUpdateContact(ContactDetailsDto contactDetailsDto)
+    {
+        var validationErrors = new List<string>();
+
+        if (contactDetailsDto.Id == 0)
+        {
+            validationErrors.Add("Contact id is required, but missing.");
+            return validationErrors;
+        }
+
+        var contactToUpdate = await _unitOfWork.Contacts.GetByIdAsync(contactDetailsDto.Id);
+        if (contactToUpdate == null)
+        {
+            validationErrors.Add(nameof(GenericErrorMessage.NotFound));
+            return validationErrors;
+        }
+
+        var existingEmail = await _unitOfWork.Contacts.GetByEmailAsync(contactDetailsDto.Email);
+
+        // check if contact data change request email is already in use but by a different user (email must be unique)
+        // if the requested email is used but it's not used by the user requesting the contact data change, communicate that the email is already taken
+        if (existingEmail != null && existingEmail.Email != contactToUpdate.Email)
+        {
+            validationErrors.Add("This email is already taken by another user.");
+        }
+
+        var password = contactDetailsDto.Password;
+        var passwordValidationErrors = ValidatePassword(password);
+        passwordValidationErrors.ForEach(validationErrors.Add);
+
+        return validationErrors;
+    }
+
+
+    private async Task<List<string>> ValidateAddContact(ContactDetailsDto contactDetailsDto)
+    {
         var validationErrors = new List<string>();
         var existingContact = await _unitOfWork.Contacts.GetByEmailAsync(contactDetailsDto.Email);
 
@@ -35,10 +137,24 @@ public class ContactService : IContactService
         }
 
         var password = contactDetailsDto.Password;
+        var passwordValidationErrors = ValidatePassword(password);
+        passwordValidationErrors.ForEach(validationErrors.Add);
+
+        if (!CategoryConstants.Categories.Contains((contactDetailsDto.Category.Name)))
+        {
+            validationErrors.Add($"The category {contactDetailsDto.Category.Name} does not exist.");
+        }
+
+        return validationErrors;
+    }
+
+    private List<string> ValidatePassword(string password)
+    {
+        var validationErrors = new List<string>();
 
         if (password.Length < 8)
         {
-            validationErrors.Add($"The password must be at least 8 characters long.");
+            validationErrors.Add("The password must be at least 8 characters long.");
         }
 
         if (!password.Any(char.IsDigit))
@@ -51,56 +167,6 @@ public class ContactService : IContactService
             validationErrors.Add("The password must contain at least one non-alphanumeric character.");
         }
 
-        if (!CategoryConstants.Categories.Contains((contactDetailsDto.CategoryDto.Name)))
-        {
-            validationErrors.Add($"The category {contactDetailsDto.CategoryDto.Name} does not exist.");
-        }
-
-        if (validationErrors.Any())
-        {
-            return ServiceResult<ContactDetailsDto>.Failure(validationErrors);
-        }
-
-        var contact = _mapper.Map<Contact>(contactDetailsDto);
-
-        var category = await _unitOfWork.Categories.GetByName(contactDetailsDto.CategoryDto.Name);
-        if (category != null)
-        {
-            contact.Category = category;
-        }
-
-        if (contactDetailsDto.SubcategoryDto != null)
-        {
-            var subcategory = await _unitOfWork.Subcategories.GetByName(contactDetailsDto.CategoryDto.Name);
-            if (subcategory != null)
-            {
-                contact.Subcategory = subcategory;
-            }
-        }
-
-        _unitOfWork.Contacts.Add(contact);
-
-        if (!await _unitOfWork.SaveChangesAsync())
-            throw new Exception("Failed to save database");
-
-        return ServiceResult<ContactDetailsDto>.Success(_mapper.Map<ContactDetailsDto>(contact));
-    }
-
-    public async Task<ServiceResult<ContactDetailsDto>> UpdateContact(ContactDetailsDto contactDetailsDto)
-    {
-        var contact = _mapper.Map<Contact>(contactDetailsDto);
-        var contactExtists = await _unitOfWork.Contacts.ExistsAsync(contact.Id);
-
-        if (!contactExtists)
-        {
-             return ServiceResult<ContactDetailsDto>.Failure([nameof(GenericErrorMessage.NotFound)]);
-        }
-
-        _unitOfWork.Contacts.Update(contact);
-
-        if (!await _unitOfWork.SaveChangesAsync())
-            throw new Exception("Failed to save database");
-
-        return ServiceResult<ContactDetailsDto>.Success(_mapper.Map<ContactDetailsDto>(contact));
+        return validationErrors;
     }
 }

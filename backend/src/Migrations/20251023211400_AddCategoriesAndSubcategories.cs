@@ -114,6 +114,16 @@ namespace RecruitmentApp.Migrations
                     { 2, "Private" },
                     { 3, "Other" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Subcategory",
+                columns: new[] { "Id", "Name", "CategoryId" },
+                values: new object[,]
+                {
+                    { 1, "Boss", 1 },
+                    { 2, "Client", 1 },
+                    { 3, "Colleague", 1 }
+                });
         }
 
         /// <inheritdoc />
