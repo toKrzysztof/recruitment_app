@@ -50,11 +50,11 @@ services:
       retries: 3
       start_period: 15s
       timeout: 10s
-    
+
   frontend:
     container_name: recruitment_app_frontend
     build:
-      context: ./backend
+      context: ./frontend
       dockerfile: Dockerfile
     image: recruitment_app_frontend
     ports:
@@ -63,6 +63,6 @@ services:
     depends_on:
       api:
         condition: service_healthy
-        
+
 networks:
   recruitment_app_db_network:
