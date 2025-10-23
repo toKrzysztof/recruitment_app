@@ -1,4 +1,4 @@
-﻿using DefaultNamespace;
+﻿using RecruitmentApp.Features.Contacts.Dto;
 using RecruitmentApp.Shared.Application;
 
 namespace RecruitmentApp.Features.Contacts.Application.Contracts;

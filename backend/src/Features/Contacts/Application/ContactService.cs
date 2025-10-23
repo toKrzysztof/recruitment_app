@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using DefaultNamespace;
 using RecruitmentApp.Features.Contacts.Application.Contracts;
 using RecruitmentApp.Features.Contacts.Domain;
+using RecruitmentApp.Features.Contacts.Dto;
 using RecruitmentApp.Shared.Application;
 using RecruitmentApp.Shared.Constants;
 using RecruitmentApp.Shared.Data.Contracts;

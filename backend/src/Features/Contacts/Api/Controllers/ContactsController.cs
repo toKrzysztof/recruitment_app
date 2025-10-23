@@ -1,8 +1,8 @@
-﻿using DefaultNamespace;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RecruitmentApp.Features.Contacts.Application.Contracts;
 using RecruitmentApp.Features.Contacts.Domain;
+using RecruitmentApp.Features.Contacts.Dto;
 using RecruitmentApp.Shared.Api;
 using RecruitmentApp.Shared.Api.Contracts;
 using RecruitmentApp.Shared.Constants;

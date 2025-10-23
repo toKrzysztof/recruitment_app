@@ -1,4 +1,4 @@
-﻿namespace DefaultNamespace;
+﻿namespace RecruitmentApp.Features.Contacts.Dto;
 
 public class ContactDetailsDto
 {
@@ -9,4 +9,6 @@ public class ContactDetailsDto
     public required string PhoneNumber { get; set; }
     public required string Password { get; set; }
     public DateOnly DateOfBirth { get; set; }
+    public required CategoryDto CategoryDto { get; set; }
+    public SubcategoryDto? SubcategoryDto { get; set; }
 }
