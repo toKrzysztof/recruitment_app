@@ -3,7 +3,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RecruitmentApp.Configuration;
 using RecruitmentApp.Features.Authentication.Application;
+using RecruitmentApp.Features.Authentication.Application.Contracts;
+using RecruitmentApp.Features.Contacts.Application;
+using RecruitmentApp.Features.Contacts.Application.Contracts;
 using RecruitmentApp.Features.Contacts.Data;
 using RecruitmentApp.Shared.Api;
 using RecruitmentApp.Shared.Api.Contracts;
@@ -16,6 +20,7 @@ public static class ApplicationServicesExtensions
 {
     public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddAutoMapper(typeof(AutoMapperProfiles));
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseNpgsql(
@@ -33,6 +38,8 @@ public static class ApplicationServicesExtensions
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IHttpService, HttpService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IContactService, ContactService>();
+        services.AddScoped<IAuthService, AuthService>();
     }
 
     public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)

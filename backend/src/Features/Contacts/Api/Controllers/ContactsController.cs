@@ -87,7 +87,7 @@ public class ContactsController : ApiControllerBase
             return NotFound();
         }
 
-        _unitOfWork.Contacts.Delete(contact);
+        _unitOfWork.Contacts.Delete(contact );
         await _unitOfWork.SaveChangesAsync();
 
         return NoContent();

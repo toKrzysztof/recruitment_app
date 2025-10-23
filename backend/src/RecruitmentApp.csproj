@@ -6,7 +6,7 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="15.0.1" />
+        <PackageReference Include="AutoMapper" Version="14.0.0" /> <!-- 15.0.1 is causing bugs -->
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />

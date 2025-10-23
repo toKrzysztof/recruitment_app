@@ -21,9 +21,39 @@ public class ContactService : IContactService
 
     public async Task<ServiceResult<ContactDetailsDto>> AddContact(ContactDetailsDto contactDetailsDto)
     {
+        var validationErrors = new List<string>();
+        var existingContact = await _unitOfWork.Contacts.GetByEmailAsync(contactDetailsDto.Email);
+
+        if (existingContact != null)
+        {
+            validationErrors.Add("This email is already taken.");
+        }
+
         if (contactDetailsDto.DateOfBirth > DateOnly.FromDateTime(DateTime.UtcNow))
         {
-            return ServiceResult<ContactDetailsDto>.Failure(["Date of birth cannot be from the future."]);
+            validationErrors.Add("Date of birth cannot be from the future.");
+        }
+
+        var password = contactDetailsDto.Password;
+
+        if (password.Length < 8)
+        {
+            validationErrors.Add($"The password must be at least 8 characters long.");
+        }
+
+        if (!password.Any(char.IsDigit))
+        {
+            validationErrors.Add("The password must contain at least one numeric character.");
+        }
+
+        if (password.All(char.IsLetterOrDigit))
+        {
+            validationErrors.Add("The password must contain at least one non-alphanumeric character.");
+        }
+
+        if (validationErrors.Any())
+        {
+            return ServiceResult<ContactDetailsDto>.Failure(validationErrors);
         }
 
         var contact = _mapper.Map<Contact>(contactDetailsDto);

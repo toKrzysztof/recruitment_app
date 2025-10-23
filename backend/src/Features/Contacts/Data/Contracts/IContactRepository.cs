@@ -7,5 +7,6 @@ namespace RecruitmentApp.Features.Contacts.Data.Contracts;
 
 public interface IContactRepository : IRepositoryBase<Contact>
 {
-  Task<PagedList<Contact>> GetAllAsync(GetAllContactsQueryParams queryParams);
+    public Task<PagedList<Contact>> GetAllAsync(GetAllContactsQueryParams queryParams);
+    public Task<Contact?> GetByEmailAsync(string email);
 }

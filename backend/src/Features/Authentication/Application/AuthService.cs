@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using RecruitmentApp.Features.Authentication.Application.Contracts;
 using RecruitmentApp.Features.Authentication.Dto;
 using RecruitmentApp.Shared.Application;
 
 namespace RecruitmentApp.Features.Authentication.Application;
 
-public class AuthService
+public class AuthService : IAuthService
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IMapper _mapper;
@@ -20,6 +21,8 @@ public class AuthService
 
     public async Task<ServiceResult<RegisterResponseDto>> Register(RegisterRequestDto registerRequestDto)
     {
+        var validationErrors = new List<string>();
+
         var identityUser = new IdentityUser
         {
             UserName = registerRequestDto.Email,
@@ -30,14 +33,40 @@ public class AuthService
 
         if (existingUser != null)
         {
-            return ServiceResult<RegisterResponseDto>.Failure(["This email is already taken."]);
+            validationErrors.Add("This email is already taken.");
+        }
+
+        var password = registerRequestDto.Password;
+
+        if (password.Length < 8)
+        {
+            validationErrors.Add($"The password must be at least 8 characters long.");
+        }
+
+        if (!password.Any(char.IsDigit))
+        {
+            validationErrors.Add("The password must contain at least one numeric character.");
+        }
+
+        if (password.All(char.IsLetterOrDigit))
+        {
+            validationErrors.Add("The password must contain at least one non-alphanumeric character.");
+        }
+
+        if (validationErrors.Any())
+        {
+            return ServiceResult<RegisterResponseDto>.Failure(validationErrors);
         }
 
         var identityResult = await _userManager.CreateAsync(identityUser, registerRequestDto.Password);
 
         if (identityResult.Succeeded)
         {
-            var registerResponseDto = _mapper.Map<RegisterResponseDto>(identityUser);
+            var registerResponseDto = new RegisterResponseDto
+            {
+                Id = identityUser.Id,
+            };
+
             return ServiceResult<RegisterResponseDto>.Success(registerResponseDto);
         }
 

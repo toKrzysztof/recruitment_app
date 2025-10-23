@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using RecruitmentApp.Features.Authentication.Application;
+﻿using Microsoft.AspNetCore.Mvc;
+using RecruitmentApp.Features.Authentication.Application.Contracts;
 using RecruitmentApp.Features.Authentication.Dto;
 using RecruitmentApp.Shared.Api;
 
@@ -8,9 +7,9 @@ namespace RecruitmentApp.Features.Authentication.Api.Controllers;
 
 public class AuthController : ApiControllerBase
 {
-    private readonly AuthService _authService;
+    private readonly IAuthService _authService;
 
-    public AuthController(AuthService authService)
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
     }
