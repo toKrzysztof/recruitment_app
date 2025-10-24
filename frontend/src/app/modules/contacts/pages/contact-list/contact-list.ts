@@ -1,14 +1,15 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ContactService } from '../../services/contact';
 import { ContactDto } from '../../models/contact-dto';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-contact-list',
-  imports: [TableModule],
+  imports: [TableModule, InputText, RouterLink],
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.scss'
 })
@@ -18,6 +19,16 @@ export class ContactListComponent implements OnInit {
   protected pageSize: number = 10;
   protected contacts = signal<ContactDto[]>([]);
   protected loading = false;
+  private columnFilters: { [key: string]: string } = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    category: '',
+    subcategory: ''
+  };
+  private sortField: string | null = null;
+  private sortOrder: 'asc' | 'desc' | null = null;
 
   constructor(private contactService: ContactService, private router: Router) {}
 
@@ -27,9 +38,35 @@ export class ContactListComponent implements OnInit {
 
   loadContacts(event: TableLazyLoadEvent): void {
     this.loading = true;
-    const page = Math.floor(event.first! / event.rows!) + 1;
+
+    const page = Math.floor((event.first ?? 0) / (event.rows ?? this.pageSize)) + 1;
+    const rows = event.rows ?? this.pageSize;
+
+    // sort
+    if (event.sortField) {
+      this.sortField = event.sortField as string;
+      this.sortOrder = event.sortOrder === 1 ? 'asc' : 'desc';
+    }
+
+    // Build filter params
+    let params = new HttpParams()
+      .set('pageNumber', page)
+      .set('pageSize', rows.toString());
+
+    if (this.sortField) {
+      params = params.set('sortBy', this.sortField).set('sort', this.sortOrder!);
+    }
+
+    // append each filter if non-empty
+    Object.keys(this.columnFilters).forEach((field) => {
+      const value = this.columnFilters[field];
+      if (value && value.trim().length > 0) {
+        params = params.set(field, value.trim());
+      }
+    });
+
     this.contactService
-      .getContacts(page, event.rows!)
+      .getContacts(params)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
@@ -43,6 +80,18 @@ export class ContactListComponent implements OnInit {
           this.loading = false;
         }
       });
+  }
+
+  onColumnFilterChange(field: string, value: string): void {
+    // update filter value
+    this.columnFilters[field] = value;
+    // reset to page 1
+    this.loadContacts({
+      first: 0,
+      rows: this.pageSize,
+      sortField: this.sortField,
+      sortOrder: this.sortOrder === 'asc' ? 1 : -1
+    });
   }
 
   private extractPaginationInfo(headers: HttpHeaders): { totalItems: number } {

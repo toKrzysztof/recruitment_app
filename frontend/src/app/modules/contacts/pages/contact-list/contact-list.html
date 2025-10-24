@@ -18,12 +18,63 @@
   </ng-template>
   <ng-template #header>
     <tr>
-      <th pSortableColumn="firstname">First Name</th>
-      <th pSortableColumn="lastname">Last Name</th>
-      <th pSortableColumn="email">Email</th>
-      <th pSortableColumn="category">Category</th>
-      <th pSortableColumn="subcategory">Subcategory</th>
+      <th pSortableColumn="firstname">
+        First Name <p-sortIcon field="firstName"></p-sortIcon>
+      </th>
+      <th pSortableColumn="lastname">
+        Last Name <p-sortIcon field="lastName"></p-sortIcon>
+      </th>
+      <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+      <th pSortableColumn="category">
+        Category <p-sortIcon field="category"></p-sortIcon>
+      </th>
+      <th pSortableColumn="subcategory">
+        Subcategory <p-sortIcon field="subcategory"></p-sortIcon>
+      </th>
       <th>Action</th>
+    </tr>
+    <tr>
+      <th>
+        <input
+          type="text"
+          pInputText
+          placeholder="Search first name"
+          (input)="onColumnFilterChange('firstName', $event.target.value)"
+        />
+      </th>
+      <th>
+        <input
+          type="text"
+          pInputText
+          placeholder="Search last name"
+          (input)="onColumnFilterChange('lastName', $event.target.value)"
+        />
+      </th>
+      <th>
+        <input
+          type="text"
+          pInputText
+          placeholder="Search email"
+          (input)="onColumnFilterChange('email', $event.target.value)"
+        />
+      </th>
+      <th>
+        <input
+          type="text"
+          pInputText
+          placeholder="Search category"
+          (input)="onColumnFilterChange('category', $event.target.value)"
+        />
+      </th>
+      <th>
+        <input
+          type="text"
+          pInputText
+          placeholder="Search subcategory"
+          (input)="onColumnFilterChange('subcategory', $event.target.value)"
+        />
+      </th>
+      <th></th>
     </tr>
   </ng-template>
   <ng-template #body let-contact>
@@ -33,7 +84,11 @@
       <td>{{ contact.email }}</td>
       <td>{{ contact.category.name }}</td>
       <td>{{ contact.subcategory.name }}</td>
-      <td><a [href]="'/contacts/' + contact.id">View details</a></td>
+      <td>
+        <a [routerLink]="'/contacts/' + contact.id" pButton class="p-button"
+          >View details</a
+        >
+      </td>
     </tr>
   </ng-template>
   <ng-template #emptymessage>

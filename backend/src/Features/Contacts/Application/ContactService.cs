@@ -30,7 +30,7 @@ public class ContactService : IContactService
 
         var contact = _mapper.Map<Contact>(contactDetailsDto);
 
-        var category = await _unitOfWork.Categories.GetByIdAsync(contactDetailsDto.Category.Id);
+        var category = await _unitOfWork.Categories.GetByNameAsync(contactDetailsDto.Category.Name);
 
         if (category == null)
             throw new Exception("Category was expected to be found in the database but was not.");

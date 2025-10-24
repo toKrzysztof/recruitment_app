@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../environment/environment';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ContactDto } from '../models/contact-dto';
 
@@ -12,11 +12,11 @@ export class ContactService {
 
   constructor(private http: HttpClient) {}
 
-  getContacts(page: number, pageSize: number): Observable<HttpResponse<ContactDto[]>> {
-    return this.http.get<ContactDto[]>(
-      `${this.apiUrl}?pageNumber=${page}&pageSize=${pageSize}`,
-      { observe: 'response' }
-    );
+  getContacts(params: HttpParams): Observable<HttpResponse<ContactDto[]>> {
+    return this.http.get<ContactDto[]>(`${this.apiUrl}`, {
+      observe: 'response',
+      params
+    });
   }
 
   getContact(id: string): Observable<ContactDto> {
