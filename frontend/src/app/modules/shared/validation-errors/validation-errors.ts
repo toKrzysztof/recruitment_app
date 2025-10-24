@@ -17,7 +17,8 @@ export class ValidationErrorsComponent {
   });
 
   private requiredError = computed(() => this.errors()?.required);
-  private emailError = computed(() => this.errors()?.email);
+  private emailFormatError = computed(() => this.errors()?.email);
+  private emailTakenError = computed(() => this.errors()?.emailTaken);
   private maxlengthError = computed(() => this.errors()?.maxlength);
   private minLengthError = computed(() => this.errors()?.minlength);
   private minValueError = computed(() => this.errors()?.min);
@@ -26,10 +27,11 @@ export class ValidationErrorsComponent {
   protected state = {
     markedForCheck: this.markedForCheck,
     requiredError: this.requiredError,
-    emailError: this.emailError,
+    emailFormatError: this.emailFormatError,
+    emailTakenError: this.emailTakenError,
     maxlengthError: this.maxlengthError,
     minLengthError: this.minLengthError,
     minValueError: this.minValueError,
-    maxValueError: this.maxValueError,
+    maxValueError: this.maxValueError
   };
 }

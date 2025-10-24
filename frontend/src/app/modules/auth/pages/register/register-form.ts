@@ -9,6 +9,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth';
+import { errorsIncludeEmailTaken } from '../../utils/email-taken';
 
 @Component({
   selector: 'app-register-form',
@@ -50,13 +51,16 @@ export class RegisterFormComponent {
             });
             this.router.navigate(['/login']);
           },
-          error: (_) => {
-            // todo - display email is already taken
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Failure',
-              detail: 'Failed to register'
-            });
+          error: (response: unknown) => {
+            if (errorsIncludeEmailTaken(response)) {
+              this.registerForm.controls.email.setErrors({ emailTaken: true });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Failure',
+                detail: 'Failed to register. Please try again later'
+              });
+            }
             this.loading = false;
           }
         });

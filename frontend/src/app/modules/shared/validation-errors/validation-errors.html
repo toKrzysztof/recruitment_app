@@ -1,22 +1,19 @@
 @if (state.markedForCheck()) {
-  <div class="validation-errors">
-    @if (state.requiredError()) {
-      <div>This field is required</div>
-    }
-    @if (state.maxlengthError()) {
-      <div>Too many characters</div>
-    }
-    @if (state.minLengthError()) {
-      <div>Not enough characters</div>
-    }
-    @if (state.emailError()) {
-      <div>The email format is incorrect</div>
-    }
-    @if (state.minValueError()) {
-      <div>The provided value is too small</div>
-    }
-    @if (state.maxValueError()) {
-      <div>The provided value is too large</div>
-    }
-  </div>
+<div class="validation-errors">
+  @if (state.requiredError()) {
+  <div>This field is required</div>
+  } @if (state.maxlengthError()) {
+  <div>Too many characters</div>
+  } @if (state.minLengthError()) {
+  <div>Not enough characters</div>
+  } @if (state.emailFormatError()) {
+  <div>The email format is incorrect</div>
+  } @if (state.minValueError()) {
+  <div>The provided value is too small</div>
+  } @if (state.maxValueError()) {
+  <div>The provided value is too large</div>
+  } @if (state.emailTakenError()) {
+  <div>The provided email is already taken</div>
+  }
+</div>
 }

@@ -8,10 +8,12 @@ import {
 } from '@angular/forms';
 import { ValidationErrorsComponent } from '../../../shared/validation-errors/validation-errors';
 import { MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { errorsIncludeEmailTaken } from '../../utils/email-taken';
 
 @Component({
   selector: 'app-login',
-  imports: [ValidationErrorsComponent, ReactiveFormsModule, RouterLink],
+  imports: [ValidationErrorsComponent, ReactiveFormsModule, RouterLink, Button],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
@@ -22,10 +24,12 @@ export class LoginComponent {
     username: ['', Validators.required],
     password: ['', Validators.required]
   });
+  protected loading: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit(): void {
+    this.loading = true;
     const loginData = this.loginForm.getRawValue();
 
     this.authService.login(loginData).subscribe({
@@ -39,6 +43,7 @@ export class LoginComponent {
           summary: 'Failure',
           detail: 'Invalid username or password'
         });
+        this.loading = false;
       }
     });
   }

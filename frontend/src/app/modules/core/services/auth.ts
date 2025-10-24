@@ -42,10 +42,8 @@ export class AuthService {
     return this.http.post<LoginResponseDto>(`${this.apiUrl}/login`, credentials);
   }
 
-  register(credentials: RegisterRequestDto): Observable<string> {
-    return this.http.post(`${this.apiUrl}/register`, credentials, {
-      responseType: 'text'
-    });
+  register(credentials: RegisterRequestDto): Observable<{ id: string }> {
+    return this.http.post<{ id: string }>(`${this.apiUrl}/register`, credentials);
   }
 
   getToken(): string | null {
