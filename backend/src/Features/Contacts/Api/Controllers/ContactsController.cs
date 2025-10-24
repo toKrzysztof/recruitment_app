@@ -98,6 +98,8 @@ public class ContactsController : ApiControllerBase
             return NotFound();
         }
 
+        _unitOfWork.Contacts.Delete(contact);
+
         if (!await _unitOfWork.SaveChangesAsync())
             throw new Exception("Failed to save database");
 
