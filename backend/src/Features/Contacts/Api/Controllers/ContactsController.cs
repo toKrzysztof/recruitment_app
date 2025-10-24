@@ -63,7 +63,7 @@ public class ContactsController : ApiControllerBase
 
         if (!serviceResponse.IsSuccess) return BadRequest(serviceResponse.Errors);
 
-        return CreatedAtAction(nameof(GetContact), new { id = serviceResponse.Data.Id }, contactDetailsDto);
+        return CreatedAtAction(nameof(GetContact), new { id = serviceResponse.Data.Id }, serviceResponse.Data);
     }
 
     // PUT: api/contacts/5

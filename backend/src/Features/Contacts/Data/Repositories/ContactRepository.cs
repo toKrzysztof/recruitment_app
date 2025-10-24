@@ -77,6 +77,17 @@ public class ContactRepository : RepositoryBase<Contact>, IContactRepository
 
     public async Task<Contact?> GetByEmailAsync(string email)
     {
-        return await DbSet.FirstOrDefaultAsync(contact => contact.Email.ToLower() == email.ToLower());
+        return await DbSet
+            .Include(c => c.Category)
+            .Include(c => c.Subcategory)
+            .FirstOrDefaultAsync(contact => contact.Email.ToLower() == email.ToLower());
+    }
+
+    public new async Task<Contact?> GetByIdAsync(int id)
+    {
+        return await DbSet
+            .Include(c => c.Category)
+            .Include(c => c.Subcategory)
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
 }

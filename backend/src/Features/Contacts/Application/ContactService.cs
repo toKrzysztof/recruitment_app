@@ -39,20 +39,22 @@ public class ContactService : IContactService
 
         if (contactDetailsDto.Subcategory != null)
         {
-            var subcategory = await _unitOfWork.Subcategories.GetByName(contactDetailsDto.Subcategory.Name);
+            var existingSubcategory = await _unitOfWork.Subcategories.GetByName(contactDetailsDto.Subcategory.Name);
 
-            if (subcategory != null)
+            if (existingSubcategory != null)
             {
-                subcategory.Category = category;
-                contact.Subcategory = subcategory;
+                existingSubcategory.Category = category;
+                contact.Subcategory = existingSubcategory;
             }
             else
             {
+                var subcategoryToCreate = _mapper.Map<Subcategory>(contactDetailsDto.Subcategory);
+                subcategoryToCreate.Category = category;
+
                 var createdSubcategory = _unitOfWork
                     .Subcategories
-                    .Add(_mapper.Map<Subcategory>(contactDetailsDto.Subcategory));
+                    .Add(subcategoryToCreate);
 
-                createdSubcategory.Category = category;
                 contact.Subcategory = createdSubcategory;
             }
         }
@@ -113,6 +115,11 @@ public class ContactService : IContactService
             validationErrors.Add("This email is already taken by another user.");
         }
 
+        if (contactDetailsDto.Subcategory != null && contactDetailsDto.Subcategory.Category.Name != CategoryConstants.Other)
+        {
+            validationErrors.Add("Creating subcategories is only permitted of category 'Other'.");
+        }
+
         var password = contactDetailsDto.Password;
         var passwordValidationErrors = ValidatePassword(password);
         passwordValidationErrors.ForEach(validationErrors.Add);
@@ -143,6 +150,11 @@ public class ContactService : IContactService
         if (!CategoryConstants.Categories.Contains((contactDetailsDto.Category.Name)))
         {
             validationErrors.Add($"The category {contactDetailsDto.Category.Name} does not exist.");
+        }
+
+        if (contactDetailsDto.Subcategory != null && contactDetailsDto.Subcategory.Category.Name != CategoryConstants.Other)
+        {
+            validationErrors.Add("Creating subcategories is only permitted of category 'Other'.");
         }
 
         return validationErrors;

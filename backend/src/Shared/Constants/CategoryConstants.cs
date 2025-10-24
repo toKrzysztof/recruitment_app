@@ -2,5 +2,8 @@
 
 public class CategoryConstants
 {
-    public static readonly List<string> Categories = ["Business", "Private", "Other"];
+    public const string Business = "Business";
+    public const string Private = "Private";
+    public const string Other = "Other";
+    public static readonly List<string> Categories = [Business, Private, Other];
 }
