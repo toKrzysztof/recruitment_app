@@ -9,104 +9,154 @@
     >
     <h2>Add contact</h2>
   </header>
-  <div class="row">
-    <div class="form-control-field">
-      <label for="firstName">First name</label>
-      <input formControlName="firstName" type="text" class="standard-input" required />
-      <app-validation-errors
-        [errors]="contactForm.controls.firstName.errors"
-        [dirty]="contactForm.controls.firstName.dirty"
-        [touched]="contactForm.controls.firstName.touched"
-      />
-    </div>
-    <div class="form-control-field">
-      <label for="lastName">Last name</label>
-      <input formControlName="lastName" type="text" class="standard-input" required />
-      <app-validation-errors
-        [errors]="contactForm.controls.lastName.errors"
-        [dirty]="contactForm.controls.lastName.dirty"
-        [touched]="contactForm.controls.lastName.touched"
-      />
-    </div>
+
+  <div class="form-control-field">
+    <label for="firstName">First name</label>
+    <input
+      formControlName="firstName"
+      type="text"
+      pInputText
+      class="standard-input"
+      required
+    />
+    <app-validation-errors
+      [errors]="contactForm.controls.firstName.errors"
+      [dirty]="contactForm.controls.firstName.dirty"
+      [touched]="contactForm.controls.firstName.touched"
+    />
   </div>
-  <div class="row">
-    <div class="form-control-field">
-      <label for="email">Email</label>
-      <input formControlName="email" type="email" class="standard-input" required />
-      <app-validation-errors
-        [errors]="contactForm.controls.email.errors"
-        [dirty]="contactForm.controls.email.dirty"
-        [touched]="contactForm.controls.email.touched"
-      />
-    </div>
-    <div class="form-control-field">
-      <label for="password">Password</label>
-      <input
-        formControlName="password"
-        type="password"
-        class="standard-input"
-        required
-      />
-      <app-validation-errors
-        [errors]="contactForm.controls.password.errors"
-        [dirty]="contactForm.controls.password.dirty"
-        [touched]="contactForm.controls.password.touched"
-      />
-    </div>
+  <div class="form-control-field">
+    <label for="lastName">Last name</label>
+    <input
+      formControlName="lastName"
+      type="text"
+      pInputText
+      class="standard-input"
+      required
+    />
+    <app-validation-errors
+      [errors]="contactForm.controls.lastName.errors"
+      [dirty]="contactForm.controls.lastName.dirty"
+      [touched]="contactForm.controls.lastName.touched"
+    />
   </div>
-  <div class="row">
-    <div class="form-control-field">
-      <label for="phoneNumber">Phone number</label>
-      <input
-        formControlName="phoneNumber"
-        type="text"
-        class="standard-input"
-        required
-      />
-      <app-validation-errors
-        [errors]="contactForm.controls.phoneNumber.errors"
-        [dirty]="contactForm.controls.phoneNumber.dirty"
-        [touched]="contactForm.controls.phoneNumber.touched"
-      />
-    </div>
-    <div class="form-control-field calendar p-fluid">
-      <label for="dateOfBirth">Date of birth</label>
-      <p-date-picker
-        fluid
-        severity="secondary"
-        appendTo="body"
-        id="dateOfBirth"
-        formControlName="dateOfBirth"
-        type="date"
-        showIcon="true"
-        class="pg-input"
-        [iconDisplay]="'input'"
-        [maxDate]="maxDate"
-      />
-    </div>
+  <div class="form-control-field">
+    <label for="email">Email</label>
+    <input
+      formControlName="email"
+      type="text"
+      pInputText
+      class="standard-input"
+      required
+    />
+    <app-validation-errors
+      [errors]="contactForm.controls.email.errors"
+      [dirty]="contactForm.controls.email.dirty"
+      [touched]="contactForm.controls.email.touched"
+    />
   </div>
-  <div class="row">
-    <!-- 
-    <div class="form-control-field">
-      <label for="category">Category</label>
-      <p-inputNumber
-        id="category"
-        formControlName="category"
-        type="number"
-        class="pg-inputnumber"
-      />
-      <app-validation-errors
-        [errors]="contactForm.controls.category.errors"
-        [dirty]="contactForm.controls.category.dirty"
-        [touched]="contactForm.controls.category.touched"
-      />
-    </div> -->
+  <div class="form-control-field">
+    <label for="password">Password</label>
+    <input
+      formControlName="password"
+      type="password"
+      class="standard-input"
+      required
+      pInputText
+    />
+    <app-validation-errors
+      [errors]="contactForm.controls.password.errors"
+      [dirty]="contactForm.controls.password.dirty"
+      [touched]="contactForm.controls.password.touched"
+    />
   </div>
-  <div class="row"></div>
+
+  <div class="form-control-field">
+    <label for="phoneNumber">Phone number</label>
+    <input
+      formControlName="phoneNumber"
+      type="text"
+      class="standard-input"
+      required
+      pInputText
+    />
+    <app-validation-errors
+      [errors]="contactForm.controls.phoneNumber.errors"
+      [dirty]="contactForm.controls.phoneNumber.dirty"
+      [touched]="contactForm.controls.phoneNumber.touched"
+    />
+  </div>
+  <div class="form-control-field calendar p-fluid">
+    <label for="dateOfBirth">Date of birth</label>
+    <p-date-picker
+      fluid
+      severity="secondary"
+      appendTo="body"
+      id="dateOfBirth"
+      formControlName="dateOfBirth"
+      type="date"
+      showIcon="true"
+      class="pg-input"
+      [iconDisplay]="'input'"
+      [maxDate]="maxDate"
+    />
+  </div>
+
+  <div class="form-control-field">
+    <label for="category">Category</label>
+    <p-select
+      formControlName="category"
+      [options]="categories"
+      optionLabel="name"
+      placeholder="Select a category"
+      (onChange)="onCategoryChange($event.value)"
+      appendTo="body"
+    ></p-select>
+    <app-validation-errors
+      [errors]="contactForm.controls.category.errors"
+      [dirty]="contactForm.controls.category.dirty"
+      [touched]="contactForm.controls.category.touched"
+    />
+  </div>
+
+  @if (showSubcategory) { } @if(showSubcategory && subcategories.length > 0 &&
+  !isOtherCategory) {
+
+  <div class="form-control-field">
+    <label for="subcategory">Subcategory</label>
+    <p-select
+      formControlName="subcategory"
+      [options]="subcategories"
+      optionLabel="name"
+      placeholder="Select a subcategory"
+      appendTo="body"
+    ></p-select>
+  </div>
+  } @if (showSubcategory && isOtherCategory) {
+  <div class="form-control-field">
+    <label for="subcategory">Subcategory</label>
+    <input
+      formControlName="subcategory"
+      type="text"
+      pInputText
+      class="standard-input"
+      placeholder="Enter new subcategory"
+    />
+    <app-validation-errors
+      [errors]="contactForm.controls.subcategory.errors"
+      [dirty]="contactForm.controls.subcategory.dirty"
+      [touched]="contactForm.controls.subcategory.touched"
+    />
+  </div>
+  }
 
   <div class="btn-group">
-    <button class="primary-btn" type="submit" [disabled]="contactForm.invalid">
-      Register
-    </button>
+    <p-button
+      class="primary-btn"
+      type="submit"
+      [disabled]="contactForm.invalid || loading"
+    >
+      @if (loading) { Submitting... } @else { Create }
+    </p-button>
   </div>
 </form>

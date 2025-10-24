@@ -2,7 +2,7 @@ import { CategoryDto } from './category-dto';
 import { SubcategoryDto } from './subcategory-dto';
 
 export interface ContactDetailsDto {
-  readonly id: string;
+  readonly id?: string;
   readonly firstName: string;
   readonly lastName: string;
   readonly email: string;
@@ -10,5 +10,5 @@ export interface ContactDetailsDto {
   readonly password: string;
   readonly dateOfBirth: string;
   readonly category: CategoryDto;
-  readonly subcategory: SubcategoryDto;
+  readonly subcategory: SubcategoryDto | null;
 }

@@ -26,7 +26,7 @@ public class ContactsController : ApiControllerBase
 
     // GET: api/contacts
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Contact>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ContactDto>))]
     public async Task<IActionResult> GetAllContacts([FromQuery] GetAllContactsQueryParams queryParams, IHttpService httpService)
     {
         var pagedList = await _unitOfWork.Contacts.GetAllAsync(queryParams);

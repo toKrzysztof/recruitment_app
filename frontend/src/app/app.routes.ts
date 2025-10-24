@@ -12,6 +12,15 @@ export const routes: Routes = [
   { path: 'register', component: RegisterFormComponent },
   { path: 'contacts', component: ContactListComponent },
   {
+    path: 'contacts/new',
+    loadComponent: () =>
+      import('./modules/contacts/pages/contact-form/contact-form').then(
+        (m) => m.ContactFormComponent
+      ),
+    canActivate: [loggedInGuard],
+    pathMatch: 'full'
+  },
+  {
     path: 'contacts/:contactId',
     loadComponent: () =>
       import('./modules/contacts/pages/contact-details/contact-details').then(
@@ -21,14 +30,6 @@ export const routes: Routes = [
     resolve: {
       contact: contactDetailsResolver
     }
-  },
-  {
-    path: 'contact/new',
-    loadComponent: () =>
-      import('./modules/contacts/pages/contact-form/contact-form').then(
-        (m) => m.ContactFormComponent
-      ),
-    canActivate: [loggedInGuard]
   },
   {
     path: 'contacts/edit/:id',

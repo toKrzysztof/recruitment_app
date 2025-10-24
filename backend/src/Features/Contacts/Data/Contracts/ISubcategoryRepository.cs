@@ -6,4 +6,5 @@ namespace RecruitmentApp.Features.Contacts.Data.Contracts;
 public interface ISubcategoryRepository : IRepositoryBase<Subcategory>
 {
     public Task<Subcategory?> GetByName(string name);
+    public Task<List<Subcategory>> GetSubcategoriesByCategoryId(int id);
 }

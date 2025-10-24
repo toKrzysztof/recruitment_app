@@ -12,7 +12,13 @@
   <div class="row">
     <div class="form-control-field">
       <label for="email">Email</label>
-      <input formControlName="email" type="email" class="standard-input" required />
+      <input
+        pInputText
+        formControlName="email"
+        type="email"
+        class="standard-input"
+        required
+      />
       <app-validation-errors
         [errors]="registerForm.controls.email.errors"
         [dirty]="registerForm.controls.email.dirty"
@@ -22,6 +28,7 @@
     <div class="form-control-field">
       <label for="password">Password</label>
       <input
+        pInputText
         formControlName="password"
         type="password"
         class="standard-input"

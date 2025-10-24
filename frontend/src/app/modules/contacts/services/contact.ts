@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../../environment/environment';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,8 +9,7 @@ import { ContactDto } from '../models/contact-dto';
 })
 export class ContactService {
   private apiUrl = `${environment.apiUrl}/contacts`;
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   getContacts(params: HttpParams): Observable<HttpResponse<ContactDto[]>> {
     return this.http.get<ContactDto[]>(`${this.apiUrl}`, {

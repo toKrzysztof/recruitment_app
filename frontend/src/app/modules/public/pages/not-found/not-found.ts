@@ -1,17 +1,10 @@
-import { Location } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { Button } from 'primeng/button';
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-not-found',
-  imports: [Button],
+  imports: [RouterLink],
   templateUrl: './not-found.html',
   styleUrl: './not-found.scss'
 })
-export class NotFound {
-  private readonly location = inject(Location);
-
-  protected back(): void {
-    this.location.historyGo(-2);
-  }
-}
+export class NotFound {}

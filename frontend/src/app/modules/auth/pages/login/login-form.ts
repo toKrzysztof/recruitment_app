@@ -9,10 +9,17 @@ import {
 import { ValidationErrorsComponent } from '../../../shared/validation-errors/validation-errors';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-login-form',
-  imports: [ValidationErrorsComponent, ReactiveFormsModule, RouterLink, Button],
+  imports: [
+    ValidationErrorsComponent,
+    ReactiveFormsModule,
+    RouterLink,
+    Button,
+    InputText
+  ],
   templateUrl: './login-form.html',
   styleUrl: './login-form.scss'
 })

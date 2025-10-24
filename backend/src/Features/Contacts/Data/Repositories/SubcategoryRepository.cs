@@ -17,4 +17,9 @@ public class SubcategoryRepository : RepositoryBase<Subcategory>, ISubcategoryRe
     {
         return await DbSet.FirstOrDefaultAsync(subcategory => subcategory.Name.ToLower() == name.ToLower());
     }
+
+    public async Task<List<Subcategory>> GetSubcategoriesByCategoryId(int id)
+    {
+        return await DbSet.Where(s => s.Category.Id == id).Include(s => s.Category).ToListAsync();
+    }
 }

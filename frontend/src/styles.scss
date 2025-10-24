@@ -64,3 +64,9 @@ body .p-button:disabled {
 a.p-button {
   text-decoration: none;
 }
+
+.footer-buttons {
+  padding-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
