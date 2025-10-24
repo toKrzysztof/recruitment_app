@@ -10,6 +10,7 @@ export const loggedInGuard: CanActivateFn = () => {
   if (loggedIn) {
     return true;
   } else {
+    authService.logout();
     router.navigate(['/login']);
     return false;
   }

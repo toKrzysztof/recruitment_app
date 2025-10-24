@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ContactDto } from '../../models/contact-dto';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ContactDetailsDto } from '../../models/contact-details-dto';
 
 @Component({
   selector: 'app-contact-details',
@@ -12,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class ContactDetailsComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private route = inject(ActivatedRoute);
-  protected contact = signal<ContactDto | null>(null);
+  protected contact = signal<ContactDetailsDto | null>(null);
 
   public ngOnInit(): void {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((_) => {
