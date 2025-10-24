@@ -83,7 +83,7 @@
       <td>{{ contact.lastName }}</td>
       <td>{{ contact.email }}</td>
       <td>{{ contact.category.name }}</td>
-      <td>{{ contact.subcategory.name }}</td>
+      <td>{{ contact.subcategory?.name || '-' }}</td>
       <td>
         <a [routerLink]="'/contacts/' + contact.id" pButton class="p-button"
           >View details</a

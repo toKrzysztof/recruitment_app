@@ -1,10 +1,10 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import {
   Validators,
   ReactiveFormsModule,
   NonNullableFormBuilder
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MessageService } from 'primeng/api';
 import { ValidationErrorsComponent } from '../../../shared/validation-errors/validation-errors';
@@ -16,6 +16,7 @@ import { SelectModule } from 'primeng/select';
 import { CategoryService } from '../../services/category';
 import { CategoryDto } from '../../models/category-dto';
 import { ContactDetailsDto } from '../../models/contact-details-dto';
+import { ContactForm } from '../../models/contact-form';
 
 @Component({
   selector: 'app-contact-form',
@@ -38,29 +39,42 @@ export class ContactFormComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private contactService = inject(ContactService);
   private categoryService = inject(CategoryService);
+  private route = inject(ActivatedRoute);
 
   protected loading = false;
   protected categories: any[] = [];
   protected subcategories: any[] = [];
   protected maxDate = new Date();
+  protected contact = signal<ContactDetailsDto | undefined>(
+    this.route.snapshot.data['contact']
+  );
 
   protected showSubcategory = false;
   // enum would be better
   protected isOtherCategory = false;
 
-  protected contactForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    firstName: ['', Validators.required],
-    lastName: ['', Validators.required],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-    phoneNumber: ['', Validators.required],
-    dateOfBirth: [null, Validators.required],
-    category: [null, Validators.required],
-    subcategory: [null, Validators.maxLength(200)]
+  protected contactForm = this.fb.group<ContactForm>({
+    email: this.fb.control('', [Validators.required, Validators.email]),
+    firstName: this.fb.control('', Validators.required),
+    lastName: this.fb.control('', Validators.required),
+    password: this.fb.control('', [Validators.required, Validators.minLength(8)]),
+    phoneNumber: this.fb.control('', Validators.required),
+    dateOfBirth: this.fb.control(null, Validators.required),
+    category: this.fb.control(null, Validators.required),
+    subcategory: this.fb.control(null, Validators.maxLength(200))
   });
 
   ngOnInit(): void {
     this.loadCategories();
+    if (this.contact() !== undefined) {
+      const { id, category, subcategory, dateOfBirth, ...upsertData } = this.contact()!;
+      this.contactForm.patchValue({
+        ...upsertData,
+        category: null,
+        subcategory: null,
+        dateOfBirth: new Date(dateOfBirth)
+      });
+    }
   }
 
   private loadCategories(): void {
@@ -81,10 +95,9 @@ export class ContactFormComponent implements OnInit {
   protected onCategoryChange(selectedCategory: any): void {
     if (!selectedCategory) return;
 
-    this.isOtherCategory = selectedCategory.name === 'Other';
     this.showSubcategory = true;
 
-    if (this.isOtherCategory) {
+    if (selectedCategory.name === 'Other') {
       this.contactForm.patchValue({ subcategory: null });
       this.subcategories = [];
     } else {
@@ -115,13 +128,23 @@ export class ContactFormComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
+  protected getActionLabel(): string {
+    if (this.loading) {
+      return this.contact() === undefined ? 'Creating...' : 'Updating...';
+    } else {
+      return this.contact() === undefined ? 'Create' : 'Update';
+    }
+  }
+
   protected onSubmit(): void {
     if (this.contactForm.invalid) return;
 
     this.loading = true;
     const form = this.contactForm.getRawValue();
 
-    const dateOfBirth = form.dateOfBirth ? this.parseDate(form.dateOfBirth) : null;
+    const dateOfBirth = form.dateOfBirth
+      ? this.parseDate(form.dateOfBirth.getTime())
+      : null;
 
     let payload: ContactDetailsDto = {
       firstName: form.firstName,
@@ -134,27 +157,52 @@ export class ContactFormComponent implements OnInit {
       subcategory: form.subcategory
     };
 
-    this.contactService
-      .createContact(payload)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Contact added successfully!'
-          });
-          this.router.navigate(['/contacts']);
-        },
-        error: (err) => {
-          console.error(err);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failure',
-            detail: 'Failed to add contact'
-          });
-          this.loading = false;
-        }
-      });
+    if (this.contact() === undefined) {
+      this.contactService
+        .createContact(payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Contact added successfully!'
+            });
+            this.router.navigate(['/contacts']);
+          },
+          error: (err) => {
+            console.error(err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Failure',
+              detail: 'Failed to add contact'
+            });
+            this.loading = false;
+          }
+        });
+    } else {
+      this.contactService
+        .updateContact(payload, this.contact()!.id!)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Contact updated successfully!'
+            });
+            this.router.navigate(['/contacts']);
+          },
+          error: (err) => {
+            console.error(err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Failure',
+              detail: 'Failed to update contact'
+            });
+            this.loading = false;
+          }
+        });
+    }
   }
 }

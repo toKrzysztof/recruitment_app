@@ -1,11 +1,47 @@
 @let c = contact(); @if (c) {
-<div>
-  <h1>{{ c!.firstName }} {{ c!.lastName }}</h1>
-  <p>Email: {{ c!.email }}</p>
-  <p>Phone: {{ c!.phoneNumber }}</p>
-  <p>Date of birth: {{ c!.dateOfBirth }}</p>
-  <p>Password: {{ c!.password }}</p>
-  <p>Category: {{ c!.category.name }}</p>
-  <p>Category: {{ c!.subcategory.name }}</p>
-</div>
+<article>
+  <div class="action-buttons">
+    <div>
+      <p-button
+        type="button"
+        severity="danger"
+        (onClick)="deleteContact()"
+        [disabled]="deleting"
+        >@if (deleting) {Deleting...} @else {Delete}</p-button
+      ><a
+        [routerLink]="'/contacts/' + c.id + '/edit'"
+        class="p-button p-button-secondary"
+        pButton
+        >Edit</a
+      >
+    </div>
+    <div>
+      <a routerLink="/contacts" class="p-button" pButton>Go back to contacts page</a>
+    </div>
+  </div>
+  <section>
+    <div>
+      <h1>{{ c!.firstName }} {{ c!.lastName }}</h1>
+      <div class="row">
+        <span class="label">Email: </span><span>{{ c!.email }}</span>
+      </div>
+      <div class="row">
+        <span class="label">Phone: </span><span>{{ c!.phoneNumber }}</span>
+      </div>
+      <div class="row">
+        <span class="label">Date of birth: </span><span>{{ c!.dateOfBirth }}</span>
+      </div>
+      <div class="row">
+        <span class="label">Password: </span><span>{{ c!.password }}</span>
+      </div>
+      <div class="row">
+        <span class="label">Category: </span><span>{{ c!.category.name }}</span>
+      </div>
+      <div class="row">
+        <span class="label">Subcategory: </span
+        ><span>{{ c!.subcategory?.name || '-' }}</span>
+      </div>
+    </div>
+  </section>
+</article>
 }

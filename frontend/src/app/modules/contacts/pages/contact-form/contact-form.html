@@ -119,8 +119,8 @@
     />
   </div>
 
-  @if (showSubcategory) { } @if(showSubcategory && subcategories.length > 0 &&
-  !isOtherCategory) {
+  @if (showSubcategory) { } @if(showSubcategory &&
+  contactForm.controls.category.value!.name === 'Business';) {
 
   <div class="form-control-field">
     <label for="subcategory">Subcategory</label>
@@ -132,7 +132,7 @@
       appendTo="body"
     ></p-select>
   </div>
-  } @if (showSubcategory && isOtherCategory) {
+  } @if (showSubcategory && contactForm.controls.category.value!.name === 'Other') {
   <div class="form-control-field">
     <label for="subcategory">Subcategory</label>
     <input
@@ -156,7 +156,7 @@
       type="submit"
       [disabled]="contactForm.invalid || loading"
     >
-      @if (loading) { Submitting... } @else { Create }
+      {{ getActionLabel() }}
     </p-button>
   </div>
 </form>

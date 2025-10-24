@@ -120,6 +120,8 @@ public class ContactService : IContactService
             }
         }
 
+        if (contactDetailsDto.Subcategory == null) contact.Subcategory = null;
+
         _unitOfWork.Contacts.Update(contact);
 
         if (!await _unitOfWork.SaveChangesAsync())
@@ -155,9 +157,9 @@ public class ContactService : IContactService
             validationErrors.Add("This email is already taken by another user.");
         }
 
-        if (contactDetailsDto.Subcategory != null && contactDetailsDto.Subcategory.Category.Name != CategoryConstants.Other)
+        if (contactDetailsDto.Subcategory != null && contactDetailsDto.Subcategory.Category.Name == CategoryConstants.Other)
         {
-            validationErrors.Add("Creating subcategories is only permitted of category 'Other'.");
+            validationErrors.Add("Creating subcategories is only permitted for category 'Other'.");
         }
 
         var password = contactDetailsDto.Password;

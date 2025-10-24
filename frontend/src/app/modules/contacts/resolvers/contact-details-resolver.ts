@@ -8,7 +8,6 @@ export const contactDetailsResolver: ResolveFn<boolean> = (route, state) => {
   const router = inject(Router);
 
   const contactId = route.paramMap.get('contactId')!;
-  console.log(contactId, 'ASK:HDKASLJFHLKASJFHASLKJFHASKLJ', +contactId);
   return contactService.getContact(contactId).pipe(
     catchError((_) => {
       router.navigate(['/404']);

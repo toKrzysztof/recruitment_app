@@ -21,10 +21,10 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'contacts/:contactId',
+    path: 'contacts/:contactId/edit',
     loadComponent: () =>
-      import('./modules/contacts/pages/contact-details/contact-details').then(
-        (m) => m.ContactDetailsComponent
+      import('./modules/contacts/pages/contact-form/contact-form').then(
+        (m) => m.ContactFormComponent
       ),
     canActivate: [loggedInGuard],
     resolve: {
@@ -32,10 +32,10 @@ export const routes: Routes = [
     }
   },
   {
-    path: 'contacts/edit/:id',
+    path: 'contacts/:contactId',
     loadComponent: () =>
-      import('./modules/contacts/pages/contact-form/contact-form').then(
-        (m) => m.ContactFormComponent
+      import('./modules/contacts/pages/contact-details/contact-details').then(
+        (m) => m.ContactDetailsComponent
       ),
     canActivate: [loggedInGuard],
     resolve: {
