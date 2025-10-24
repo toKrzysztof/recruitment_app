@@ -11,10 +11,11 @@ import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth';
 import { errorsIncludeEmailTaken } from '../../utils/email-taken';
 import { passwordComplexityValidator } from '../../../shared/validators/password-validator';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-register-form',
-  imports: [ValidationErrorsComponent, ReactiveFormsModule, RouterLink],
+  imports: [ValidationErrorsComponent, ReactiveFormsModule, RouterLink, Button],
   templateUrl: './register-form.html',
   styleUrl: './register-form.scss'
 })

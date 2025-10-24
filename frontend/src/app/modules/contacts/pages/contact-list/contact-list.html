@@ -7,6 +7,7 @@
   [rowsPerPageOptions]="[10, 20]"
   (onLazyLoad)="loadContacts($event)"
   [loading]="loading"
+  [sortMode]="'single'"
   stripedRows
   [scrollable]="true"
 >
@@ -17,11 +18,11 @@
   </ng-template>
   <ng-template #header>
     <tr>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Email</th>
-      <th>Category</th>
-      <th>Subcategory</th>
+      <th pSortableColumn="firstname">First Name</th>
+      <th pSortableColumn="lastname">Last Name</th>
+      <th pSortableColumn="email">Email</th>
+      <th pSortableColumn="category">Category</th>
+      <th pSortableColumn="subcategory">Subcategory</th>
       <th>Action</th>
     </tr>
   </ng-template>

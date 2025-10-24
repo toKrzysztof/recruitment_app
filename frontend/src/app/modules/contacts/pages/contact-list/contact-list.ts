@@ -1,15 +1,14 @@
-// src/app/components/contacts-list/contacts-list.component.ts
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ContactService } from '../../services/contact';
 import { ContactDto } from '../../models/contact-dto';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { HttpHeaders } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-contact-list',
-  imports: [TableModule, RouterLink],
+  imports: [TableModule],
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.scss'
 })

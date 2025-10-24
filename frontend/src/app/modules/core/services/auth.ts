@@ -1,23 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../../../environment/environment';
 import { LoginRequestDto } from '../models/login-request-dto';
 import { LoginResponseDto } from '../models/login-response-dto';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { RegisterRequestDto } from '../models/register-request-dto';
+import { EMAILCLAIMJWTTOKENKEY, TOKEN_KEY } from '../../auth/constants/jwt-constants';
+import { JwtDecoded } from '../models/jwt-decoded';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly TOKEN_KEY = 'jwtToken';
   private readonly apiUrl = `${environment.apiUrl}/auth`;
+  private userEmailSubject = new BehaviorSubject<string | null>(this.getUserEmail());
+
+  userEmail$ = this.userEmailSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
   isLoggedIn(): boolean {
-    const token = localStorage.getItem(this.TOKEN_KEY);
+    const token = localStorage.getItem(TOKEN_KEY);
     if (!token) {
       return false;
     }
@@ -46,15 +50,38 @@ export class AuthService {
     return this.http.post<{ id: string }>(`${this.apiUrl}/register`, credentials);
   }
 
+  getUserEmail(): string | null {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      return null;
+    }
+    try {
+      const decodedToken: JwtDecoded = jwtDecode<JwtPayload>(token);
+      if (
+        decodedToken[EMAILCLAIMJWTTOKENKEY] === undefined ||
+        decodedToken[EMAILCLAIMJWTTOKENKEY] === null
+      ) {
+        return null;
+      }
+
+      return decodedToken[EMAILCLAIMJWTTOKENKEY];
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  }
+
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return localStorage.getItem(TOKEN_KEY);
   }
 
   setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+    localStorage.setItem(TOKEN_KEY, token);
+    this.userEmailSubject.next(this.getUserEmail());
   }
 
-  removeToken(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+  logout(): void {
+    localStorage.removeItem(TOKEN_KEY);
+    this.userEmailSubject.next(null);
   }
 }

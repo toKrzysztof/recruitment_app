@@ -1,0 +1,24 @@
+.username-label {
+  color: rgb(220, 220, 220);
+}
+
+.username {
+  text-decoration: underline;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+header {
+  padding-bottom: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.navigation {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}

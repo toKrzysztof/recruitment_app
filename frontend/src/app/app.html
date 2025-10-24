@@ -1,3 +1,22 @@
 <div class="page-wrapper">
-  <p-toast position="bottom-right"></p-toast> <router-outlet />
+  <header>
+    @let e = userEmail(); @if (e) {
+    <div class="header">
+      <div>
+        <span class="username-label">Logged in as </span>
+        <span class="username">{{ e }}</span>
+      </div>
+      <p-button (onClick)="logout()">Logout</p-button>
+    </div>
+    } @else {
+    <nav class="navigation">
+      <a routerLink="/register" pButton class="p-button p-button-secondary">Register</a>
+      <a routerLink="/login" pButton class="p-button">Login</a>
+    </nav>
+    }
+  </header>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
 </div>
+<p-toast position="bottom-right"></p-toast>
