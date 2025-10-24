@@ -9,12 +9,12 @@
   </header>
   <div class="row">
     <div class="form-control-field">
-      <label for="username">Email</label>
-      <input formControlName="username" type="text" class="standard-input" required />
+      <label for="email">Email</label>
+      <input formControlName="email" type="text" class="standard-input" required />
       <app-validation-errors
-        [errors]="loginForm.controls.username.errors"
-        [dirty]="loginForm.controls.username.dirty"
-        [touched]="loginForm.controls.username.touched"
+        [errors]="loginForm.controls.email.errors"
+        [dirty]="loginForm.controls.email.dirty"
+        [touched]="loginForm.controls.email.touched"
       />
     </div>
     <div class="form-control-field">

@@ -12,7 +12,7 @@
 >
   <ng-template #caption>
     <div class="table-caption">
-      <span class="text-xl font-bold">Contacts</span>
+      <h1 class="text-xl font-bold">Contacts</h1>
     </div>
   </ng-template>
   <ng-template #header>
@@ -20,9 +20,8 @@
       <th>First Name</th>
       <th>Last Name</th>
       <th>Email</th>
-      <th>Phone number</th>
-      <th>Date of birth</th>
       <th>Category</th>
+      <th>Subcategory</th>
       <th>Action</th>
     </tr>
   </ng-template>
@@ -31,9 +30,8 @@
       <td>{{ contact.firstName }}</td>
       <td>{{ contact.lastName }}</td>
       <td>{{ contact.email }}</td>
-      <td>{{ contact.phoneNumber }}</td>
-      <td>{{ contact.dateOfBirth }}</td>
-      <td>{{ contact.category }}</td>
+      <td>{{ contact.category.name }}</td>
+      <td>{{ contact.subcategory.name }}</td>
       <td><a [href]="'/contacts/' + contact.id">View details</a></td>
     </tr>
   </ng-template>

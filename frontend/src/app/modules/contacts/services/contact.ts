@@ -19,7 +19,7 @@ export class ContactService {
     );
   }
 
-  getContact(id: number): Observable<ContactDto> {
+  getContact(id: string): Observable<ContactDto> {
     return this.http.get<ContactDto>(`${this.apiUrl}/${id}`);
   }
 
@@ -31,7 +31,7 @@ export class ContactService {
     return this.http.put<void>(`${this.apiUrl}/${contact.id}`, contact);
   }
 
-  deleteContact(id: number): Observable<void> {
+  deleteContact(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

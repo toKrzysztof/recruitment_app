@@ -1,9 +1,9 @@
-@if (contact) {
+@let c = contact(); @if (c) {
 <div>
-  <h2>{{ contact!.firstName }} {{ contact!.lastName }}</h2>
-  <p>Email: {{ contact!.email }}</p>
-  <p>Phone: {{ contact!.phoneNumber }}</p>
-  <p>Date of birth: {{ contact!.dateOfBirth }}</p>
-  <p>Password: {{ contact!.password }}</p>
+  <h1>{{ c!.firstName }} {{ c!.lastName }}</h1>
+  <p>Email: {{ c!.email }}</p>
+  <p>Phone: {{ c!.phoneNumber }}</p>
+  <p>Date of birth: {{ c!.dateOfBirth }}</p>
+  <p>Password: {{ c!.password }}</p>
 </div>
 }

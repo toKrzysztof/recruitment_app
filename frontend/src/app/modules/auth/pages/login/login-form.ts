@@ -9,19 +9,18 @@ import {
 import { ValidationErrorsComponent } from '../../../shared/validation-errors/validation-errors';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { errorsIncludeEmailTaken } from '../../utils/email-taken';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-form',
   imports: [ValidationErrorsComponent, ReactiveFormsModule, RouterLink, Button],
-  templateUrl: './login.html',
-  styleUrl: './login.scss'
+  templateUrl: './login-form.html',
+  styleUrl: './login-form.scss'
 })
-export class LoginComponent {
+export class LoginFormComponent {
   private fb: NonNullableFormBuilder = inject(NonNullableFormBuilder);
   private messageService = inject(MessageService);
   protected loginForm = this.fb.group({
-    username: ['', Validators.required],
+    email: ['', Validators.required],
     password: ['', Validators.required]
   });
   protected loading: boolean = false;
@@ -41,7 +40,7 @@ export class LoginComponent {
         this.messageService.add({
           severity: 'error',
           summary: 'Failure',
-          detail: 'Invalid username or password'
+          detail: 'Invalid email or password'
         });
         this.loading = false;
       }

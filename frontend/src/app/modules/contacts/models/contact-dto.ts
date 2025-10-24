@@ -1,5 +1,5 @@
 export interface ContactDto {
-  readonly id?: number;
+  readonly id?: string;
   readonly firstName: string;
   readonly dateOfBirth: string;
   readonly lastName: string;

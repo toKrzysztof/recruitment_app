@@ -10,6 +10,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth';
 import { errorsIncludeEmailTaken } from '../../utils/email-taken';
+import { passwordComplexityValidator } from '../../../shared/validators/password-validator';
 
 @Component({
   selector: 'app-register-form',
@@ -30,7 +31,7 @@ export class RegisterFormComponent {
 
   protected registerForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required]
+    password: ['', passwordComplexityValidator()]
   });
 
   protected onSubmit(): void {
