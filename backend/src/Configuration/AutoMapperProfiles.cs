@@ -9,7 +9,11 @@ public class AutoMapperProfiles : Profile
     public AutoMapperProfiles()
     {
         CreateMap<Contact, ContactDetailsDto>();
-        CreateMap<ContactDetailsDto, Contact>();
+        CreateMap<ContactDetailsDto, Contact>()
+            .ForMember(dest => dest.Category, opt => opt.Ignore())
+            .ForMember(dest => dest.Subcategory, opt => opt.Ignore());
+        CreateMap<Contact, ContactDto>();
+        CreateMap<ContactDto, Contact>();
         CreateMap<Category, CategoryDto>();
         CreateMap<CategoryDto, Category>();
         CreateMap<Subcategory, SubcategoryDto>();

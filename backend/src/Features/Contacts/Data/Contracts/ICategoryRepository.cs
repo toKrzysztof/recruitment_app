@@ -5,5 +5,5 @@ namespace RecruitmentApp.Features.Contacts.Data.Contracts;
 
 public interface ICategoryRepository : IRepositoryBase<Category>
 {
-    public Task<Category?> GetByName(string name);
+    public Task<Category?> GetByNameAsync(string name);
 }

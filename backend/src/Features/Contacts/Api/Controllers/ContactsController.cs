@@ -63,7 +63,7 @@ public class ContactsController : ApiControllerBase
 
         if (!serviceResponse.IsSuccess) return BadRequest(serviceResponse.Errors);
 
-        return CreatedAtAction(nameof(GetContact), new { id = serviceResponse.Data.Id }, serviceResponse.Data);
+        return Ok(serviceResponse.Data);
     }
 
     // PUT: api/contacts/5
@@ -71,12 +71,15 @@ public class ContactsController : ApiControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutContact(int id, ContactDetailsDto contactDetailsDto)
     {
+        contactDetailsDto.Id = id;
         var serviceResponse = await _contactService.UpdateContact(contactDetailsDto);
 
         if (serviceResponse.Errors.Any(e => e == nameof(GenericErrorMessage.NotFound)))
         {
-            NotFound();
-        } else if (!serviceResponse.IsSuccess)
+            return NotFound();
+        }
+
+        if (!serviceResponse.IsSuccess)
         {
             return BadRequest(serviceResponse.Errors);
         }

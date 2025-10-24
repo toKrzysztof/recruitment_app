@@ -13,7 +13,7 @@ public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Category?> GetByName(string name)
+    public async Task<Category?> GetByNameAsync(string name)
     {
         return await DbSet.FirstOrDefaultAsync(category => category.Name.ToLower() == name.ToLower());
     }

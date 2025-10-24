@@ -17,37 +17,39 @@ public class ContactRepository : RepositoryBase<Contact>, IContactRepository
 
     public async Task<PagedList<Contact>> GetAllAsync(GetAllContactsQueryParams queryParams)
     {
-        var query = DbSet.AsQueryable();
+        var query = DbSet
+            .Include(c => c.Category)
+            .Include(c => c.Subcategory)
+            .AsQueryable();
 
-        // TODO - uncomment once Categories and Subcategories are added
-        // if (queryParams.Category != null)
-        // {
-        //     query = query.Where(contact => contact.Category == queryParams.Category);
-        // }
-        //
-        // if (queryParams.Subcategory != null)
-        // {
-        //     query = query.Where(contact => contact.Subcategory == queryParams.Subcategory);
-        // }
+        if (queryParams.Category != null)
+        {
+            query = query.Where(contact => contact.Category.Name.ToLower() == queryParams.Category.ToLower());
+        }
+
+        if (queryParams.Subcategory != null)
+        {
+            query = query.Where(contact => contact.Subcategory != null && contact.Subcategory.Name.ToLower() == queryParams.Subcategory.ToLower());
+        }
 
         if (queryParams.LastName != null)
         {
-          query = query.Where(contact => contact.LastName.ToLower().Contains(queryParams.LastName.ToLower()));
+            query = query.Where(contact => contact.LastName.ToLower().Contains(queryParams.LastName.ToLower()));
         }
 
         if (queryParams.FirstName != null)
         {
-          query = query.Where(contact => contact.FirstName.ToLower().Contains(queryParams.FirstName.ToLower()));
+            query = query.Where(contact => contact.FirstName.ToLower().Contains(queryParams.FirstName.ToLower()));
         }
 
         if (queryParams.Email != null)
         {
-          query = query.Where(contact => contact.Email.ToLower().Contains(queryParams.Email.ToLower()));
+            query = query.Where(contact => contact.Email.ToLower().Contains(queryParams.Email.ToLower()));
         }
 
         if (queryParams.Phone != null)
         {
-          query = query.Where(contact => contact.PhoneNumber.Contains(queryParams.Phone));
+            query = query.Where(contact => contact.PhoneNumber.Contains(queryParams.Phone));
         }
 
         var selectQuery = queryParams.SortBy switch

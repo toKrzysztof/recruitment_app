@@ -30,7 +30,7 @@ public class ContactService : IContactService
 
         var contact = _mapper.Map<Contact>(contactDetailsDto);
 
-        var category = await _unitOfWork.Categories.GetByName(contactDetailsDto.Category.Name);
+        var category = await _unitOfWork.Categories.GetByIdAsync(contactDetailsDto.Category.Id);
 
         if (category == null)
             throw new Exception("Category was expected to be found in the database but was not.");
@@ -81,6 +81,45 @@ public class ContactService : IContactService
             throw new Exception("Contact with the given id was expected to be found in the database but was not.");
 
         _mapper.Map(contactDetailsDto, contact);
+
+        if (contactDetailsDto.Category.Name != contact.Category.Name)
+        {
+            var newExistingCategory = await _unitOfWork.Categories.GetByNameAsync(contactDetailsDto.Category.Name);
+
+            if (newExistingCategory == null)
+            {
+                var createdCategory = _unitOfWork.Categories
+                    .Add(_mapper.Map<Category>(contactDetailsDto.Category));
+
+                contact.Category = createdCategory;
+            }
+            else
+            {
+                contact.Category = newExistingCategory;
+            }
+        }
+
+        var subcategoryChanged = contactDetailsDto.Subcategory != null
+                                 && contact.Subcategory != null
+                                 && contactDetailsDto.Subcategory.Name != contact.Subcategory.Name;
+
+        if (subcategoryChanged)
+        {
+            var newExistingSubcategory = await _unitOfWork.Subcategories.GetByName(contactDetailsDto.Subcategory!.Name);
+
+            if (newExistingSubcategory == null)
+            {
+                var createdSubcategory = _unitOfWork
+                    .Subcategories
+                    .Add(_mapper.Map<Subcategory>(contactDetailsDto.Subcategory));
+                contact.Subcategory = createdSubcategory;
+            }
+            else
+            {
+                contact.Subcategory = newExistingSubcategory;
+            }
+        }
+
         _unitOfWork.Contacts.Update(contact);
 
         if (!await _unitOfWork.SaveChangesAsync())
@@ -100,6 +139,7 @@ public class ContactService : IContactService
         }
 
         var contactToUpdate = await _unitOfWork.Contacts.GetByIdAsync(contactDetailsDto.Id);
+
         if (contactToUpdate == null)
         {
             validationErrors.Add(nameof(GenericErrorMessage.NotFound));
@@ -126,7 +166,6 @@ public class ContactService : IContactService
 
         return validationErrors;
     }
-
 
     private async Task<List<string>> ValidateAddContact(ContactDetailsDto contactDetailsDto)
     {
