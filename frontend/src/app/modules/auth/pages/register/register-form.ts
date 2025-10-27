@@ -54,7 +54,7 @@ export class RegisterFormComponent {
         .subscribe({
           next: (_) => {
             this.messageService.add({
-              severity: 'error',
+              severity: 'success',
               summary: 'Success',
               detail: 'Registration succesful!'
             });

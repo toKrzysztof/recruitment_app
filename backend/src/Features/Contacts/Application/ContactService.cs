@@ -156,11 +156,12 @@ public class ContactService : IContactService
         {
             validationErrors.Add("This email is already taken by another user.");
         }
-
-        if (contactDetailsDto.Subcategory != null && contactDetailsDto.Subcategory.Category.Name == CategoryConstants.Other)
-        {
-            validationErrors.Add("Creating subcategories is only permitted for category 'Other'.");
-        }
+        
+        // i don't know if this is a requirement after all        
+        // if (contactDetailsDto.Subcategory != null && contactDetailsDto.Subcategory.Category.Name != CategoryConstants.Other)
+        // {
+        //   validationErrors.Add("Creating subcategories is only permitted for category 'Other'.");
+        // }
 
         var password = contactDetailsDto.Password;
         var passwordValidationErrors = ValidatePassword(password);
@@ -193,12 +194,13 @@ public class ContactService : IContactService
             validationErrors.Add($"The category {contactDetailsDto.Category.Name} does not exist.");
         }
 
-        if (contactDetailsDto.Subcategory != null && contactDetailsDto.Subcategory.Category.Name != CategoryConstants.Other)
-        {
-            validationErrors.Add("Creating subcategories is only permitted of category 'Other'.");
-        }
+        // i don't know if this is a requirement after all
+        // if (contactDetailsDto.Subcategory != null && contactDetailsDto.Subcategory.Category.Name != CategoryConstants.Other)
+        // {
+        //     validationErrors.Add("Creating subcategories is only permitted for category 'Other'.");
+        // }
 
-        return validationErrors;
+    return validationErrors;
     }
 
     private List<string> ValidatePassword(string password)
